@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1F2A37"
+    tools:context=".PinActivity">
+
+    <ImageView
+        android:id="@+id/lock_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_lock"
+        app:tint="@color/white"
+        android:contentDescription="@string/lock_icon" />
+
+    <TextView
+        android:id="@+id/title_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/mental_health_journal"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lock_icon" />
+
+    <TextView
+        android:id="@+id/subtitle_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/enter_pin_to_unlock"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_textview" />
+
+    <LinearLayout
+        android:id="@+id/pin_dots_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtitle_textview">
+
+        <ImageView
+            android:id="@+id/pin_dot_1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_pin_dot_empty" />
+
+        <ImageView
+            android:id="@+id/pin_dot_2"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_pin_dot_empty" />
+
+        <ImageView
+            android:id="@+id/pin_dot_3"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_pin_dot_empty" />
+
+        <ImageView
+            android:id="@+id/pin_dot_4"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_pin_dot_empty" />
+
+    </LinearLayout>
+
+    <GridLayout
+        android:id="@+id/pin_pad_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:columnCount="3"
+        android:rowCount="4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pin_dots_layout">
+
+        <Button
+            android:id="@+id/button1"
+            style="@style/PinPadButton"
+            android:text="1" />
+
+        <Button
+            android:id="@+id/button2"
+            style="@style/PinPadButton"
+            android:text="2" />
+
+        <Button
+            android:id="@+id/button3"
+            style="@style/PinPadButton"
+            android:text="3" />
+
+        <Button
+            android:id="@+id/button4"
+            style="@style/PinPadButton"
+            android:text="4" />
+
+        <Button
+            android:id="@+id/button5"
+            style="@style/PinPadButton"
+            android:text="5" />
+
+        <Button
+            android:id="@+id/button6"
+            style="@style/PinPadButton"
+            android:text="6" />
+
+        <Button
+            android:id="@+id/button7"
+            style="@style/PinPadButton"
+            android:text="7" />
+
+        <Button
+            android:id="@+id/button8"
+            style="@style/PinPadButton"
+            android:text="8" />
+
+        <Button
+            android:id="@+id/button9"
+            style="@style/PinPadButton"
+            android:text="9" />
+
+        <Button
+            android:id="@+id/button_empty"
+            style="@style/PinPadButton"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="10dp"
+            android:background="@android:color/transparent"
+            android:clickable="false" />
+
+        <Button
+            android:id="@+id/button0"
+            style="@style/PinPadButton"
+            android:text="0" />
+
+        <ImageButton
+            android:id="@+id/button_backspace"
+            style="@style/PinPadButton"
+            android:src="@drawable/ic_backspace" />
+    </GridLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
