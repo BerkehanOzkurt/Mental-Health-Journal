@@ -104,7 +104,7 @@
                         android:layout_height="48dp"
                         android:background="@drawable/emoji_background_very_good"
                         android:padding="8dp"
-                        android:src="@drawable/ic_very_good" />
+                        android:src="@drawable/face1" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -126,7 +126,7 @@
                         android:layout_height="48dp"
                         android:background="@drawable/emoji_background_good"
                         android:padding="8dp"
-                        android:src="@drawable/ic_good" />
+                        android:src="@drawable/face2" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -148,7 +148,7 @@
                         android:layout_height="48dp"
                         android:background="@drawable/emoji_background_normal"
                         android:padding="8dp"
-                        android:src="@drawable/ic_normal" />
+                        android:src="@drawable/face3" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -170,7 +170,7 @@
                         android:layout_height="48dp"
                         android:background="@drawable/emoji_background_bad"
                         android:padding="8dp"
-                        android:src="@drawable/ic_bad" />
+                        android:src="@drawable/face4" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -192,7 +192,7 @@
                         android:layout_height="48dp"
                         android:background="@drawable/emoji_background_very_bad"
                         android:padding="8dp"
-                        android:src="@drawable/ic_very_bad" />
+                        android:src="@drawable/face5" />
 
                     <TextView
                         android:layout_width="wrap_content"
