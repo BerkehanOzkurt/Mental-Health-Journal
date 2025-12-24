@@ -156,7 +156,9 @@
         <ImageButton
             android:id="@+id/button_backspace"
             style="@style/PinPadButton"
-            android:src="@drawable/ic_backspace" />
+            android:padding="24dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/delete" />
     </GridLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
