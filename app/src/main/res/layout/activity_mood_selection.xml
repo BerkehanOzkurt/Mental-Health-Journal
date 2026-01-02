@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1E1E1E"
+    tools:context=".MoodSelectionActivity">
+
+    <!-- Header with back button and save button -->
+    <LinearLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:background="#1E1E1E">
+
+        <!-- Back Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="0dp"
+            android:insetLeft="0dp"
+            android:insetRight="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:icon="@drawable/ic_back"
+            app:iconGravity="textStart"
+            app:iconTint="@android:color/white"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:strokeColor="#555555"
+            app:strokeWidth="2dp"
+            app:cornerRadius="24dp" />
+
+        <!-- Spacer -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- Continue Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:text="Continue"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:enabled="false"
+            android:alpha="0.5"
+            style="@style/Widget.MaterialComponents.Button"
+            app:backgroundTint="@color/very_good"
+            app:icon="@drawable/ic_check"
+            app:iconGravity="textStart"
+            app:iconTint="@android:color/white" />
+
+    </LinearLayout>
+
+    <!-- Main Content -->
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header_layout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="How are you?"
+                android:textColor="@android:color/white"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp" />
+
+            <!-- Date and Time Section -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp">
+
+                <!-- Date -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/edit_text_background"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📅"
+                        android:textSize="18sp"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Today, 29 December"
+                        android:textColor="@color/very_good"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="16dp"
+                    android:layout_height="1dp" />
+
+                <!-- Time -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/edit_text_background"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⏰"
+                        android:textSize="18sp"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:id="@+id/tv_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="22:33"
+                        android:textColor="@color/very_good"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Mood Selection with ImageViews -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="48dp">
+
+                <!-- Very Good (rad) -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/btn_very_good"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/emoji_background_very_good"
+                        android:padding="12dp"
+                        android:src="@drawable/face1"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="rad"
+                        android:textColor="@color/very_good"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Good -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/btn_good"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/emoji_background_good"
+                        android:padding="12dp"
+                        android:src="@drawable/face2"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="good"
+                        android:textColor="@color/good"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Normal (meh) -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/btn_normal"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/emoji_background_normal"
+                        android:padding="12dp"
+                        android:src="@drawable/face3"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="meh"
+                        android:textColor="@color/normal"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Bad -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/btn_bad"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/emoji_background_bad"
+                        android:padding="12dp"
+                        android:src="@drawable/face4"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="bad"
+                        android:textColor="@color/bad"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Very Bad (awful) -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/btn_very_bad"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/emoji_background_very_bad"
+                        android:padding="12dp"
+                        android:src="@drawable/face5"
+                        android:clickable="true"
+                        android:focusable="true" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="awful"
+                        android:textColor="@color/very_bad"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Instruction Text -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Select your mood to continue"
+                android:textColor="#757575"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

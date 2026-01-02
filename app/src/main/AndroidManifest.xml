@@ -24,6 +24,8 @@
         <activity android:name=".CalendarActivity" />
         <activity android:name=".StatsActivity" />
         <activity android:name=".MoreActivity" />
+        <activity android:name=".AddEntryActivity" />
+        <activity android:name=".MoodSelectionActivity" />
     </application>
 
 </manifest>
