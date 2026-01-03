@@ -253,4 +253,150 @@ public class JournalRepository {
             executorService.shutdown();
         }
     }
+
+    // ========== Statistics Methods ==========
+
+    /**
+     * Get photo count in date range
+     * @param startTime Start timestamp
+     * @param endTime End timestamp
+     * @param callback Callback to receive the count
+     */
+    public void getPhotoCountInRange(long startTime, long endTime, RepositoryCallback<Integer> callback) {
+        executorService.execute(() -> {
+            try {
+                int count = journalEntryDao.getPhotoCountInRange(startTime, endTime);
+                if (callback != null) {
+                    callback.onComplete(count);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get voice memo count in date range
+     * @param startTime Start timestamp
+     * @param endTime End timestamp
+     * @param callback Callback to receive the count
+     */
+    public void getVoiceMemoCountInRange(long startTime, long endTime, RepositoryCallback<Integer> callback) {
+        executorService.execute(() -> {
+            try {
+                int count = journalEntryDao.getVoiceMemoCountInRange(startTime, endTime);
+                if (callback != null) {
+                    callback.onComplete(count);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get total photo count
+     * @param callback Callback to receive the count
+     */
+    public void getTotalPhotoCount(RepositoryCallback<Integer> callback) {
+        executorService.execute(() -> {
+            try {
+                int count = journalEntryDao.getTotalPhotoCount();
+                if (callback != null) {
+                    callback.onComplete(count);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get total voice memo count
+     * @param callback Callback to receive the count
+     */
+    public void getTotalVoiceMemoCount(RepositoryCallback<Integer> callback) {
+        executorService.execute(() -> {
+            try {
+                int count = journalEntryDao.getTotalVoiceMemoCount();
+                if (callback != null) {
+                    callback.onComplete(count);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get entry count in date range
+     * @param startTime Start timestamp
+     * @param endTime End timestamp
+     * @param callback Callback to receive the count
+     */
+    public void getEntryCountInRange(long startTime, long endTime, RepositoryCallback<Integer> callback) {
+        executorService.execute(() -> {
+            try {
+                int count = journalEntryDao.getEntryCountInRange(startTime, endTime);
+                if (callback != null) {
+                    callback.onComplete(count);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get mood count by level in date range
+     * @param moodLevel The mood level (1-5)
+     * @param startTime Start timestamp
+     * @param endTime End timestamp
+     * @param callback Callback to receive the count
+     */
+    public void getMoodCountInRange(int moodLevel, long startTime, long endTime, RepositoryCallback<Integer> callback) {
+        executorService.execute(() -> {
+            try {
+                int count = journalEntryDao.getMoodCountInRange(moodLevel, startTime, endTime);
+                if (callback != null) {
+                    callback.onComplete(count);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get entries in date range synchronously
+     * @param startTime Start timestamp
+     * @param endTime End timestamp
+     * @param callback Callback to receive the entries
+     */
+    public void getEntriesInRangeSync(long startTime, long endTime, RepositoryCallback<List<JournalEntryEntity>> callback) {
+        executorService.execute(() -> {
+            try {
+                List<JournalEntryEntity> entries = journalEntryDao.getEntriesInRangeSync(startTime, endTime);
+                if (callback != null) {
+                    callback.onComplete(entries);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
 }

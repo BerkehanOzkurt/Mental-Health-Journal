@@ -132,4 +132,66 @@ public interface JournalEntryDao {
      */
     @Query("SELECT AVG(moodLevel) FROM journal_entries WHERE timestamp >= :startTime AND timestamp <= :endTime")
     float getAverageMood(long startTime, long endTime);
+
+    // ========== Statistics Queries ==========
+
+    /**
+     * Count entries with photos in a date range
+     * @param startTime Start timestamp
+     * @param endTime End timestamp
+     * @return Count of entries with photos
+     */
+    @Query("SELECT COUNT(*) FROM journal_entries WHERE photoPath IS NOT NULL AND photoPath != '' AND timestamp >= :startTime AND timestamp <= :endTime")
+    int getPhotoCountInRange(long startTime, long endTime);
+
+    /**
+     * Count entries with voice memos in a date range
+     * @param startTime Start timestamp
+     * @param endTime End timestamp
+     * @return Count of entries with voice memos
+     */
+    @Query("SELECT COUNT(*) FROM journal_entries WHERE voiceMemoPath IS NOT NULL AND voiceMemoPath != '' AND timestamp >= :startTime AND timestamp <= :endTime")
+    int getVoiceMemoCountInRange(long startTime, long endTime);
+
+    /**
+     * Count all entries with photos
+     * @return Total count of entries with photos
+     */
+    @Query("SELECT COUNT(*) FROM journal_entries WHERE photoPath IS NOT NULL AND photoPath != ''")
+    int getTotalPhotoCount();
+
+    /**
+     * Count all entries with voice memos
+     * @return Total count of entries with voice memos
+     */
+    @Query("SELECT COUNT(*) FROM journal_entries WHERE voiceMemoPath IS NOT NULL AND voiceMemoPath != ''")
+    int getTotalVoiceMemoCount();
+
+    /**
+     * Get entries count in a date range
+     * @param startTime Start timestamp
+     * @param endTime End timestamp
+     * @return Count of entries
+     */
+    @Query("SELECT COUNT(*) FROM journal_entries WHERE timestamp >= :startTime AND timestamp <= :endTime")
+    int getEntryCountInRange(long startTime, long endTime);
+
+    /**
+     * Get mood count by level in a date range
+     * @param moodLevel The mood level (1-5)
+     * @param startTime Start timestamp
+     * @param endTime End timestamp
+     * @return Count of entries with that mood level in range
+     */
+    @Query("SELECT COUNT(*) FROM journal_entries WHERE moodLevel = :moodLevel AND timestamp >= :startTime AND timestamp <= :endTime")
+    int getMoodCountInRange(int moodLevel, long startTime, long endTime);
+
+    /**
+     * Get entries in date range synchronously for statistics
+     * @param startTime Start timestamp
+     * @param endTime End timestamp
+     * @return List of entries
+     */
+    @Query("SELECT * FROM journal_entries WHERE timestamp >= :startTime AND timestamp <= :endTime ORDER BY timestamp ASC")
+    List<JournalEntryEntity> getEntriesInRangeSync(long startTime, long endTime);
 }
