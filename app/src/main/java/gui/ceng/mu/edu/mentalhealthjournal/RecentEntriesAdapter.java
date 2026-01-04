@@ -1,9 +1,11 @@
 package gui.ceng.mu.edu.mentalhealthjournal;
 
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,9 +14,16 @@ import java.util.List;
 public class RecentEntriesAdapter extends RecyclerView.Adapter<RecentEntriesAdapter.ViewHolder> {
 
     private List<JournalEntry> entries;
+    private OnEntryActionListener listener;
 
-    public RecentEntriesAdapter(List<JournalEntry> entries) {
+    public interface OnEntryActionListener {
+        void onEditEntry(JournalEntry entry);
+        void onDeleteEntry(JournalEntry entry);
+    }
+
+    public RecentEntriesAdapter(List<JournalEntry> entries, OnEntryActionListener listener) {
         this.entries = entries;
+        this.listener = listener;
     }
 
     @NonNull
@@ -31,6 +40,24 @@ public class RecentEntriesAdapter extends RecyclerView.Adapter<RecentEntriesAdap
         holder.date.setText(entry.getDate());
         holder.moodIcon.setImageResource(entry.getMoodIcon());
         holder.moodIcon.setBackgroundResource(entry.getMoodBackground());
+
+        holder.btnMore.setOnClickListener(v -> {
+            ContextThemeWrapper wrapper = new ContextThemeWrapper(v.getContext(), R.style.CustomPopupMenu);
+            PopupMenu popup = new PopupMenu(wrapper, v);
+            popup.getMenuInflater().inflate(R.menu.menu_entry_options, popup.getMenu());
+            popup.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+                if (id == R.id.action_edit) {
+                    if (listener != null) listener.onEditEntry(entry);
+                    return true;
+                } else if (id == R.id.action_delete) {
+                    if (listener != null) listener.onDeleteEntry(entry);
+                    return true;
+                }
+                return false;
+            });
+            popup.show();
+        });
     }
 
     @Override
@@ -40,13 +67,14 @@ public class RecentEntriesAdapter extends RecyclerView.Adapter<RecentEntriesAdap
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title, date;
-        ImageView moodIcon;
+        ImageView moodIcon, btnMore;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.entry_title);
             date = itemView.findViewById(R.id.entry_date);
             moodIcon = itemView.findViewById(R.id.entry_mood_icon);
+            btnMore = itemView.findViewById(R.id.btn_more);
         }
     }
 }

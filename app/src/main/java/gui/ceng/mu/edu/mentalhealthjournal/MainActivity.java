@@ -1,12 +1,15 @@
 package gui.ceng.mu.edu.mentalhealthjournal;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private JournalRepository repository;
     private TextView greetingText;
     private TextView streakText;
+    private TextView userNameText;
 
     // Activity result launcher for AddEntryActivity
     private ActivityResultLauncher<Intent> addEntryLauncher;
@@ -64,11 +68,13 @@ public class MainActivity extends AppCompatActivity {
         setupRecyclerView();
         observeEntries();
         updateGreeting();
+        updateUserName();
     }
 
     private void initViews() {
         greetingText = findViewById(R.id.greeting_text);
         streakText = findViewById(R.id.streak_text);
+        userNameText = findViewById(R.id.user_name_text);
     }
 
     private void setupBottomNavigation() {
@@ -80,15 +86,21 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.navigation_home) {
                 return true;
             } else if (id == R.id.navigation_calendar) {
-                startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
+                Intent intent = new Intent(getApplicationContext(), CalendarActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
                 overridePendingTransition(0, 0);
                 return true;
             } else if (id == R.id.navigation_stats) {
-                startActivity(new Intent(getApplicationContext(), StatsActivity.class));
+                Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
                 overridePendingTransition(0, 0);
                 return true;
             } else if (id == R.id.navigation_more) {
-                startActivity(new Intent(getApplicationContext(), MoreActivity.class));
+                Intent intent = new Intent(getApplicationContext(), MoreActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
                 overridePendingTransition(0, 0);
                 return true;
             }
@@ -134,7 +146,28 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setNestedScrollingEnabled(true);
 
         journalEntries = new ArrayList<>();
-        adapter = new RecentEntriesAdapter(journalEntries);
+        adapter = new RecentEntriesAdapter(journalEntries, new RecentEntriesAdapter.OnEntryActionListener() {
+            @Override
+            public void onEditEntry(JournalEntry entry) {
+                Intent intent = new Intent(MainActivity.this, AddEntryActivity.class);
+                intent.putExtra(AddEntryActivity.EXTRA_ENTRY_ID, entry.getId());
+                intent.putExtra(AddEntryActivity.EXTRA_MOOD_LEVEL, entry.getMoodLevel());
+                addEntryLauncher.launch(intent);
+            }
+
+            @Override
+            public void onDeleteEntry(JournalEntry entry) {
+                new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Delete Entry")
+                    .setMessage("Are you sure you want to delete this entry?")
+                    .setPositiveButton("Delete", (dialog, which) -> {
+                        repository.deleteById(entry.getId());
+                        Toast.makeText(MainActivity.this, "Entry deleted", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+            }
+        });
         recyclerView.setAdapter(adapter);
     }
 
@@ -171,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         int moodIcon = entity.getMoodIconResource();
         int moodBackground = entity.getMoodBackgroundResource();
 
-        return new JournalEntry(title, timeAgo, moodIcon, moodBackground);
+        return new JournalEntry(entity.getId(), title, timeAgo, moodIcon, moodBackground, entity.getMoodLevel());
     }
 
     /**
@@ -316,5 +349,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         greetingText.setText(greeting);
+    }
+
+    /**
+     * Update user name from SharedPreferences
+     */
+    private void updateUserName() {
+        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        String userName = prefs.getString("user_name", "User");
+        userNameText.setText(userName + " 👋");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh bottom navigation selection when returning to this activity
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+        // Update user name in case it was changed in settings
+        updateUserName();
     }
 }

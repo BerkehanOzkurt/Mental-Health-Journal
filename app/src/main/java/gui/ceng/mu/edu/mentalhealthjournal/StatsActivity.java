@@ -213,8 +213,14 @@ public class StatsActivity extends AppCompatActivity {
 
     private long[] getDateRange() {
         Calendar calendar = Calendar.getInstance();
+        // Set end time to end of today
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
         long endTime = calendar.getTimeInMillis();
 
+        // Calculate start time based on period
         switch (currentPeriod) {
             case PERIOD_MONTHLY:
                 calendar.add(Calendar.MONTH, -1);
@@ -223,9 +229,14 @@ public class StatsActivity extends AppCompatActivity {
                 calendar.add(Calendar.YEAR, -1);
                 break;
             default: // WEEKLY
-                calendar.add(Calendar.DAY_OF_YEAR, -7);
+                calendar.add(Calendar.DAY_OF_YEAR, -6); // -6 to include today = 7 days total
                 break;
         }
+        // Set start time to beginning of that day
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         long startTime = calendar.getTimeInMillis();
 
         return new long[]{startTime, endTime};
@@ -645,17 +656,23 @@ public class StatsActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.navigation_home) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
                 overridePendingTransition(0, 0);
                 return true;
             } else if (id == R.id.navigation_calendar) {
-                startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
+                Intent intent = new Intent(getApplicationContext(), CalendarActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
                 overridePendingTransition(0, 0);
                 return true;
             } else if (id == R.id.navigation_stats) {
                 return true;
             } else if (id == R.id.navigation_more) {
-                startActivity(new Intent(getApplicationContext(), MoreActivity.class));
+                Intent intent = new Intent(getApplicationContext(), MoreActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
                 overridePendingTransition(0, 0);
                 return true;
             }
@@ -666,6 +683,10 @@ public class StatsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Refresh the bottom navigation selection
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_stats);
+        // Reload statistics
         loadStatistics();
     }
 }

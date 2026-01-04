@@ -72,17 +72,23 @@ public class CalendarActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.navigation_home) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
                 overridePendingTransition(0, 0);
                 return true;
             } else if (id == R.id.navigation_calendar) {
                 return true;
             } else if (id == R.id.navigation_stats) {
-                startActivity(new Intent(getApplicationContext(), StatsActivity.class));
+                Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
                 overridePendingTransition(0, 0);
                 return true;
             } else if (id == R.id.navigation_more) {
-                startActivity(new Intent(getApplicationContext(), MoreActivity.class));
+                Intent intent = new Intent(getApplicationContext(), MoreActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(intent);
                 overridePendingTransition(0, 0);
                 return true;
             }
@@ -93,6 +99,10 @@ public class CalendarActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Refresh bottom navigation selection
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_calendar);
+        // Reload calendar data
         loadCalendar();
     }
 

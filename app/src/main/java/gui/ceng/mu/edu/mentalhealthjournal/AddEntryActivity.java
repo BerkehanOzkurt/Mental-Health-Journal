@@ -1,8 +1,17 @@
 package gui.ceng.mu.edu.mentalhealthjournal;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -10,7 +19,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.button.MaterialButton;
@@ -21,8 +35,15 @@ import gui.ceng.mu.edu.mentalhealthjournal.data.repository.JournalRepository;
 import gui.ceng.mu.edu.mentalhealthjournal.fragment.EmotionsFragment;
 import gui.ceng.mu.edu.mentalhealthjournal.fragment.SleepFragment;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Activity for adding a new journal entry.
@@ -36,13 +57,19 @@ public class AddEntryActivity extends AppCompatActivity {
     public static final String EXTRA_MONTH = "month";
     public static final String EXTRA_YEAR = "year";
     public static final String EXTRA_TIMESTAMP = "timestamp";
+    public static final String EXTRA_ENTRY_ID = "entry_id";
 
     private int moodLevel = 3; // Default to normal
     private long entryTimestamp;
+    private long editEntryId = -1; // -1 means new entry, otherwise editing existing
+    private JournalEntryEntity existingEntry = null;
 
     private ImageView selectedMoodIcon;
     private EditText editQuickNote;
     private ImageView photoPreview;
+    private MaterialButton btnRecordVoice;
+    private View voicePlaybackContainer;
+    private TextView voiceDurationText;
 
     private EmotionsFragment emotionsFragment;
     private SleepFragment sleepFragment;
@@ -50,9 +77,22 @@ public class AddEntryActivity extends AppCompatActivity {
     private JournalRepository repository;
     private Handler mainHandler;
 
-    // Photo and voice memo paths (to be implemented)
+    // Photo and voice memo paths
     private String photoPath = null;
     private String voiceMemoPath = null;
+    private Uri currentPhotoUri = null;
+
+    // Voice recording
+    private MediaRecorder mediaRecorder = null;
+    private MediaPlayer mediaPlayer = null;
+    private boolean isRecording = false;
+    private boolean isPlaying = false;
+    private long recordingStartTime = 0;
+
+    // Activity Result Launchers
+    private ActivityResultLauncher<Intent> cameraLauncher;
+    private ActivityResultLauncher<Intent> galleryLauncher;
+    private ActivityResultLauncher<String[]> permissionLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +102,12 @@ public class AddEntryActivity extends AppCompatActivity {
         // Initialize repository for database operations
         repository = new JournalRepository(this);
         mainHandler = new Handler(Looper.getMainLooper());
+
+        // Setup activity result launchers
+        setupActivityLaunchers();
+
+        // Check if editing existing entry
+        editEntryId = getIntent().getLongExtra(EXTRA_ENTRY_ID, -1);
 
         // Get mood level from intent
         moodLevel = getIntent().getIntExtra(EXTRA_MOOD_LEVEL, 3);
@@ -89,6 +135,109 @@ public class AddEntryActivity extends AppCompatActivity {
         setupFragments();
         setupClickListeners();
         updateMoodIcon();
+
+        // If editing, load the existing entry data
+        if (editEntryId != -1) {
+            loadExistingEntry();
+        }
+    }
+
+    private void setupActivityLaunchers() {
+        // Camera launcher
+        cameraLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && currentPhotoUri != null) {
+                    photoPath = currentPhotoUri.getPath();
+                    showPhotoPreview(currentPhotoUri);
+                }
+            }
+        );
+
+        // Gallery launcher
+        galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Uri selectedImageUri = result.getData().getData();
+                    if (selectedImageUri != null) {
+                        photoPath = copyImageToAppStorage(selectedImageUri);
+                        if (photoPath != null) {
+                            showPhotoPreview(Uri.fromFile(new File(photoPath)));
+                        }
+                    }
+                }
+            }
+        );
+
+        // Permission launcher
+        permissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            permissions -> {
+                // Check if all permissions granted
+                boolean allGranted = true;
+                for (Boolean granted : permissions.values()) {
+                    if (!granted) {
+                        allGranted = false;
+                        break;
+                    }
+                }
+                if (!allGranted) {
+                    Toast.makeText(this, "Permission required for this feature", Toast.LENGTH_SHORT).show();
+                }
+            }
+        );
+    }
+
+    private void loadExistingEntry() {
+        repository.getEntryById(editEntryId, new JournalRepository.RepositoryCallback<JournalEntryEntity>() {
+            @Override
+            public void onComplete(JournalEntryEntity entry) {
+                mainHandler.post(() -> {
+                    if (entry != null) {
+                        existingEntry = entry;
+                        moodLevel = entry.getMoodLevel();
+                        entryTimestamp = entry.getTimestamp();
+                        updateMoodIcon();
+                        
+                        // Set note
+                        if (entry.getNote() != null) {
+                            editQuickNote.setText(entry.getNote());
+                        }
+                        
+                        // Set photo/voice paths and show previews
+                        photoPath = entry.getPhotoPath();
+                        voiceMemoPath = entry.getVoiceMemoPath();
+                        
+                        // Show existing photo
+                        if (photoPath != null && new File(photoPath).exists()) {
+                            showPhotoPreview(Uri.fromFile(new File(photoPath)));
+                        }
+                        
+                        // Show existing voice memo
+                        if (voiceMemoPath != null && new File(voiceMemoPath).exists()) {
+                            btnRecordVoice.setText("🎤 Voice Memo - Tap for options");
+                        }
+                        
+                        // Set emotions in fragment after a short delay for fragment to be ready
+                        mainHandler.postDelayed(() -> {
+                            if (entry.getEmotions() != null) {
+                                emotionsFragment.setSelectedEmotions(entry.getEmotions());
+                            }
+                            if (entry.getSleepTags() != null) {
+                                sleepFragment.setSelectedSleepOptions(entry.getSleepTags());
+                            }
+                        }, 100);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+                mainHandler.post(() -> Toast.makeText(AddEntryActivity.this, 
+                    "Failed to load entry", Toast.LENGTH_SHORT).show());
+            }
+        });
     }
 
     private void initViews() {
@@ -133,31 +282,260 @@ public class AddEntryActivity extends AppCompatActivity {
 
         // Take photo
         MaterialButton btnTakePhoto = findViewById(R.id.btn_take_photo);
-        btnTakePhoto.setOnClickListener(v -> {
-            // TODO: Implement camera intent
-            Toast.makeText(this, "Camera feature coming soon!", Toast.LENGTH_SHORT).show();
-        });
+        btnTakePhoto.setOnClickListener(v -> takePhoto());
 
         // From gallery
         MaterialButton btnFromGallery = findViewById(R.id.btn_from_gallery);
-        btnFromGallery.setOnClickListener(v -> {
-            // TODO: Implement gallery intent
-            Toast.makeText(this, "Gallery feature coming soon!", Toast.LENGTH_SHORT).show();
-        });
+        btnFromGallery.setOnClickListener(v -> pickFromGallery());
 
         // Record voice memo
-        MaterialButton btnRecordVoice = findViewById(R.id.btn_record_voice);
-        btnRecordVoice.setOnClickListener(v -> {
-            // TODO: Implement voice recording
-            Toast.makeText(this, "Voice memo feature coming soon!", Toast.LENGTH_SHORT).show();
-        });
+        btnRecordVoice = findViewById(R.id.btn_record_voice);
+        btnRecordVoice.setOnClickListener(v -> toggleVoiceRecording());
 
         // Edit activities
         View btnEditActivities = findViewById(R.id.btn_edit_activities);
         btnEditActivities.setOnClickListener(v -> {
-            // TODO: Open activity editor
             Toast.makeText(this, "Edit activities coming soon!", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    // ===================== CAMERA FUNCTIONALITY =====================
+
+    private void takePhoto() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            permissionLauncher.launch(new String[]{Manifest.permission.CAMERA});
+            return;
+        }
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = createImageFile();
+            if (photoFile != null) {
+                currentPhotoUri = FileProvider.getUriForFile(this,
+                        getPackageName() + ".fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentPhotoUri);
+                cameraLauncher.launch(takePictureIntent);
+            }
+        } else {
+            Toast.makeText(this, "No camera app available", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private File createImageFile() {
+        try {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+            String imageFileName = "JOURNAL_" + timeStamp;
+            File storageDir = new File(getExternalFilesDir(null), "Pictures");
+            if (!storageDir.exists()) {
+                storageDir.mkdirs();
+            }
+            File image = new File(storageDir, imageFileName + ".jpg");
+            photoPath = image.getAbsolutePath();
+            return image;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void pickFromGallery() {
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+        galleryLauncher.launch(pickIntent);
+    }
+
+    private String copyImageToAppStorage(Uri sourceUri) {
+        try {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+            String imageFileName = "JOURNAL_" + timeStamp + ".jpg";
+            File storageDir = new File(getExternalFilesDir(null), "Pictures");
+            if (!storageDir.exists()) {
+                storageDir.mkdirs();
+            }
+            File destFile = new File(storageDir, imageFileName);
+
+            InputStream inputStream = getContentResolver().openInputStream(sourceUri);
+            FileOutputStream outputStream = new FileOutputStream(destFile);
+
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            outputStream.close();
+
+            return destFile.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to copy image", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
+
+    private void showPhotoPreview(Uri imageUri) {
+        try {
+            photoPreview.setVisibility(View.VISIBLE);
+            photoPreview.setImageURI(imageUri);
+            
+            // Add click listener to show options
+            photoPreview.setOnClickListener(v -> showPhotoOptions());
+            
+            Toast.makeText(this, "Photo added!", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showPhotoOptions() {
+        new AlertDialog.Builder(this)
+            .setTitle("Photo Options")
+            .setItems(new String[]{"View Full Size", "Remove Photo"}, (dialog, which) -> {
+                if (which == 0) {
+                    // View full size - open in gallery app
+                    if (photoPath != null) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", new File(photoPath));
+                        intent.setDataAndType(uri, "image/*");
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        startActivity(intent);
+                    }
+                } else {
+                    // Remove photo
+                    photoPath = null;
+                    photoPreview.setVisibility(View.GONE);
+                    photoPreview.setImageDrawable(null);
+                    Toast.makeText(this, "Photo removed", Toast.LENGTH_SHORT).show();
+                }
+            })
+            .show();
+    }
+
+    // ===================== VOICE RECORDING FUNCTIONALITY =====================
+
+    private void toggleVoiceRecording() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            permissionLauncher.launch(new String[]{Manifest.permission.RECORD_AUDIO});
+            return;
+        }
+
+        if (isRecording) {
+            stopRecording();
+        } else {
+            // If there's already a recording, ask before overwriting
+            if (voiceMemoPath != null) {
+                new AlertDialog.Builder(this)
+                    .setTitle("Voice Memo")
+                    .setMessage("You already have a voice memo. What would you like to do?")
+                    .setPositiveButton("Record New", (d, w) -> startRecording())
+                    .setNeutralButton("Play", (d, w) -> playVoiceMemo())
+                    .setNegativeButton("Delete", (d, w) -> deleteVoiceMemo())
+                    .show();
+            } else {
+                startRecording();
+            }
+        }
+    }
+
+    private void startRecording() {
+        try {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+            String audioFileName = "VOICE_" + timeStamp + ".m4a";
+            File storageDir = new File(getExternalFilesDir(null), "Audio");
+            if (!storageDir.exists()) {
+                storageDir.mkdirs();
+            }
+            File audioFile = new File(storageDir, audioFileName);
+            voiceMemoPath = audioFile.getAbsolutePath();
+
+            mediaRecorder = new MediaRecorder();
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mediaRecorder.setAudioEncodingBitRate(128000);
+            mediaRecorder.setAudioSamplingRate(44100);
+            mediaRecorder.setOutputFile(voiceMemoPath);
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+
+            isRecording = true;
+            recordingStartTime = System.currentTimeMillis();
+            btnRecordVoice.setText("⏹ Stop Recording");
+            btnRecordVoice.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.very_bad));
+
+            Toast.makeText(this, "Recording started...", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to start recording", Toast.LENGTH_SHORT).show();
+            voiceMemoPath = null;
+        }
+    }
+
+    private void stopRecording() {
+        if (mediaRecorder != null) {
+            try {
+                mediaRecorder.stop();
+                mediaRecorder.release();
+                mediaRecorder = null;
+
+                isRecording = false;
+                long duration = (System.currentTimeMillis() - recordingStartTime) / 1000;
+                btnRecordVoice.setText("🎤 Voice Memo (" + duration + "s) - Tap for options");
+                btnRecordVoice.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.darker_gray));
+
+                Toast.makeText(this, "Recording saved! (" + duration + " seconds)", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                voiceMemoPath = null;
+            }
+        }
+    }
+
+    private void playVoiceMemo() {
+        if (voiceMemoPath == null) return;
+
+        if (isPlaying && mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+            isPlaying = false;
+            btnRecordVoice.setText("🎤 Voice Memo - Tap for options");
+            return;
+        }
+
+        try {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(voiceMemoPath);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            isPlaying = true;
+            btnRecordVoice.setText("⏹ Playing...");
+
+            mediaPlayer.setOnCompletionListener(mp -> {
+                isPlaying = false;
+                btnRecordVoice.setText("🎤 Voice Memo - Tap for options");
+                mp.release();
+                mediaPlayer = null;
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to play recording", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void deleteVoiceMemo() {
+        if (voiceMemoPath != null) {
+            File file = new File(voiceMemoPath);
+            if (file.exists()) {
+                file.delete();
+            }
+            voiceMemoPath = null;
+            btnRecordVoice.setText("Tap to Record");
+            btnRecordVoice.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.darker_gray));
+            Toast.makeText(this, "Voice memo deleted", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateMoodIcon() {
@@ -195,9 +573,14 @@ public class AddEntryActivity extends AppCompatActivity {
      * Uses background thread via JournalRepository.
      */
     private void saveEntry() {
-        // Create new entry
-        JournalEntryEntity entry = new JournalEntryEntity();
-        entry.setTimestamp(entryTimestamp);
+        // Create or update entry
+        JournalEntryEntity entry;
+        if (existingEntry != null) {
+            entry = existingEntry;
+        } else {
+            entry = new JournalEntryEntity();
+            entry.setTimestamp(entryTimestamp);
+        }
         entry.setMoodLevel(moodLevel);
 
         // Get selected emotions from fragment
@@ -218,8 +601,31 @@ public class AddEntryActivity extends AppCompatActivity {
         entry.setPhotoPath(photoPath);
         entry.setVoiceMemoPath(voiceMemoPath);
 
-        // Save to database in background thread
-        repository.insert(entry, new JournalRepository.RepositoryCallback<Long>() {
+        // Save or update in database
+        if (existingEntry != null) {
+            // Update existing entry
+            repository.update(entry, new JournalRepository.RepositoryCallback<Void>() {
+                @Override
+                public void onComplete(Void result) {
+                    mainHandler.post(() -> {
+                        Toast.makeText(AddEntryActivity.this, 
+                                "Entry updated successfully!", Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
+                        finish();
+                    });
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    mainHandler.post(() -> {
+                        Toast.makeText(AddEntryActivity.this, 
+                                "Failed to update entry: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+                }
+            });
+        } else {
+            // Insert new entry
+            repository.insert(entry, new JournalRepository.RepositoryCallback<Long>() {
             @Override
             public void onComplete(Long result) {
                 // Run on main thread to show toast and finish
@@ -239,11 +645,40 @@ public class AddEntryActivity extends AppCompatActivity {
                 });
             }
         });
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Don't shutdown repository here as it might be used by other activities
+        // Release media resources
+        if (mediaRecorder != null) {
+            try {
+                mediaRecorder.release();
+            } catch (Exception ignored) {}
+            mediaRecorder = null;
+        }
+        if (mediaPlayer != null) {
+            try {
+                mediaPlayer.release();
+            } catch (Exception ignored) {}
+            mediaPlayer = null;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Stop recording if activity is stopped
+        if (isRecording) {
+            stopRecording();
+        }
+        // Stop playback
+        if (isPlaying && mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+            isPlaying = false;
+        }
     }
 }

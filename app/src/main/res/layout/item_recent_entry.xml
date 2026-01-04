@@ -48,8 +48,10 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/btn_more"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_more"
             app:tint="#9CA3AF" />
     </LinearLayout>

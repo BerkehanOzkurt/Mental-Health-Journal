@@ -6,4 +6,15 @@
     </style>
 
     <style name="Theme.MentalHealthJournal" parent="Base.Theme.MentalHealthJournal" />
+
+    <!-- Custom PopupMenu style with rounded corners -->
+    <style name="CustomPopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupBackground">@drawable/popup_menu_background</item>
+        <item name="android:popupElevation">8dp</item>
+    </style>
+
+    <style name="PopupMenuTextStyle" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>
