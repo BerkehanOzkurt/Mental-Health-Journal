@@ -100,35 +100,54 @@ public class MoreActivity extends AppCompatActivity {
 
         // Media & Memories
         findViewById(R.id.menu_photo_gallery).setOnClickListener(v -> 
-            showToast("Photo Gallery - Coming soon!"));
+            startActivity(new Intent(this, PhotoGalleryActivity.class)));
         findViewById(R.id.menu_voice_memos).setOnClickListener(v -> 
-            showToast("Voice Memos - Coming soon!"));
-        findViewById(R.id.menu_important_days).setOnClickListener(v -> 
-            showToast("Important Days - Coming soon!"));
-        findViewById(R.id.menu_achievements).setOnClickListener(v -> 
-            showToast("Achievements - Coming soon!"));
+            startActivity(new Intent(this, VoiceMemosActivity.class)));
 
         // Settings
-        findViewById(R.id.menu_reminders).setOnClickListener(v -> 
-            showToast("Reminders - Coming soon!"));
-        findViewById(R.id.menu_edit_moods).setOnClickListener(v -> 
-            showToast("Edit Moods - Coming soon!"));
-        findViewById(R.id.menu_edit_activities).setOnClickListener(v -> 
-            showToast("Edit Activities - Coming soon!"));
-        findViewById(R.id.menu_security).setOnClickListener(v -> 
-            startActivity(new Intent(this, PinActivity.class)));
-        findViewById(R.id.menu_backup).setOnClickListener(v -> 
-            showToast("Backup & Restore - Coming soon!"));
         findViewById(R.id.menu_settings).setOnClickListener(v -> 
             startActivity(new Intent(this, SettingsActivity.class)));
+        findViewById(R.id.menu_edit_moods).setOnClickListener(v -> 
+            startActivity(new Intent(this, EditMoodsActivity.class)));
+        findViewById(R.id.menu_edit_activities).setOnClickListener(v -> 
+            startActivity(new Intent(this, EditActivitiesActivity.class)));
+        findViewById(R.id.menu_backup).setOnClickListener(v -> 
+            showBackupRestoreDialog());
 
         // Support
         findViewById(R.id.menu_help).setOnClickListener(v -> 
-            showToast("Help & FAQ - Coming soon!"));
+            startActivity(new Intent(this, HelpActivity.class)));
         findViewById(R.id.menu_feedback).setOnClickListener(v -> 
-            showToast("Send Feedback - Coming soon!"));
+            sendFeedbackEmail());
         findViewById(R.id.menu_about).setOnClickListener(v -> 
             showAboutDialog());
+    }
+
+    private void showBackupRestoreDialog() {
+        String[] options = {"Backup Data", "Restore Data"};
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Backup & Restore")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        showToast("Backup feature coming soon!");
+                    } else {
+                        showToast("Restore feature coming soon!");
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void sendFeedbackEmail() {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("message/rfc822");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@mentalhealthjournal.app"});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Mental Health Journal Feedback");
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send feedback..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            showToast("No email app installed");
+        }
     }
 
     private void openStatsWithPeriod(String period) {

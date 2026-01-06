@@ -15,15 +15,24 @@ public class RecentEntriesAdapter extends RecyclerView.Adapter<RecentEntriesAdap
 
     private List<JournalEntry> entries;
     private OnEntryActionListener listener;
+    private OnItemClickListener itemClickListener;
 
     public interface OnEntryActionListener {
         void onEditEntry(JournalEntry entry);
         void onDeleteEntry(JournalEntry entry);
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(JournalEntry entry);
+    }
+
     public RecentEntriesAdapter(List<JournalEntry> entries, OnEntryActionListener listener) {
         this.entries = entries;
         this.listener = listener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.itemClickListener = listener;
     }
 
     @NonNull

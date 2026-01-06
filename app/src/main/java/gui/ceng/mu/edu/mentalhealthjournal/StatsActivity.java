@@ -71,10 +71,50 @@ public class StatsActivity extends AppCompatActivity {
         repository = new JournalRepository(this);
         mainHandler = new Handler(Looper.getMainLooper());
 
+        // Check for period parameter from intent
+        String period = getIntent().getStringExtra("period");
+        if ("weekly".equals(period)) {
+            currentPeriod = PERIOD_WEEKLY;
+        } else if ("monthly".equals(period)) {
+            currentPeriod = PERIOD_MONTHLY;
+        } else if ("yearly".equals(period)) {
+            currentPeriod = PERIOD_YEARLY;
+        }
+
         initViews();
         setupBottomNavigation();
         setupTabListeners();
+        
+        // Update tab selection based on period
+        updateTabSelection();
+        
         loadStatistics();
+    }
+
+    private void updateTabSelection() {
+        // Reset all tabs
+        tabWeekly.setBackgroundResource(R.drawable.tab_unselected_background);
+        tabMonthly.setBackgroundResource(R.drawable.tab_unselected_background);
+        tabYearly.setBackgroundResource(R.drawable.tab_unselected_background);
+        tabWeekly.setTextColor(0xFF888888);
+        tabMonthly.setTextColor(0xFF888888);
+        tabYearly.setTextColor(0xFF888888);
+        
+        // Select current tab
+        switch (currentPeriod) {
+            case PERIOD_WEEKLY:
+                tabWeekly.setBackgroundResource(R.drawable.tab_selected_background);
+                tabWeekly.setTextColor(0xFFFFFFFF);
+                break;
+            case PERIOD_MONTHLY:
+                tabMonthly.setBackgroundResource(R.drawable.tab_selected_background);
+                tabMonthly.setTextColor(0xFFFFFFFF);
+                break;
+            case PERIOD_YEARLY:
+                tabYearly.setBackgroundResource(R.drawable.tab_selected_background);
+                tabYearly.setTextColor(0xFFFFFFFF);
+                break;
+        }
     }
 
     private void initViews() {

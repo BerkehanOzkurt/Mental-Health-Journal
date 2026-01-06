@@ -1,12 +1,16 @@
 package gui.ceng.mu.edu.mentalhealthjournal;
 
 import android.animation.ObjectAnimator;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,11 +34,13 @@ public class MoodSelectionActivity extends AppCompatActivity {
     private ImageView btnVeryGood, btnGood, btnNormal, btnBad, btnVeryBad;
     private MaterialButton btnContinue;
     private TextView tvDate, tvTime;
+    private LinearLayout dateContainer, timeContainer;
     
     private int selectedMood = -1; // -1 means no mood selected
     private ImageView currentlySelected = null;
     
     private int day, month, year;
+    private int selectedHour, selectedMinute;
     private long entryTimestamp;
 
     @Override
@@ -47,9 +53,11 @@ public class MoodSelectionActivity extends AppCompatActivity {
         day = getIntent().getIntExtra(EXTRA_DAY, calendar.get(Calendar.DAY_OF_MONTH));
         month = getIntent().getIntExtra(EXTRA_MONTH, calendar.get(Calendar.MONTH));
         year = getIntent().getIntExtra(EXTRA_YEAR, calendar.get(Calendar.YEAR));
+        selectedHour = calendar.get(Calendar.HOUR_OF_DAY);
+        selectedMinute = calendar.get(Calendar.MINUTE);
         
         // Set the calendar to the selected date
-        calendar.set(year, month, day);
+        calendar.set(year, month, day, selectedHour, selectedMinute);
         entryTimestamp = calendar.getTimeInMillis();
         
         initViews();
@@ -66,9 +74,16 @@ public class MoodSelectionActivity extends AppCompatActivity {
         btnContinue = findViewById(R.id.btn_continue);
         tvDate = findViewById(R.id.tv_date);
         tvTime = findViewById(R.id.tv_time);
+        dateContainer = findViewById(R.id.date_container);
+        timeContainer = findViewById(R.id.time_container);
     }
     
     private void setupDateTimeDisplay() {
+        updateDateDisplay();
+        updateTimeDisplay();
+    }
+    
+    private void updateDateDisplay() {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, day);
         
@@ -88,16 +103,22 @@ public class MoodSelectionActivity extends AppCompatActivity {
             dateText = sdf.format(calendar.getTime());
         }
         tvDate.setText(dateText);
-        
-        // Format time (current time)
-        SimpleDateFormat timeSdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        tvTime.setText(timeSdf.format(Calendar.getInstance().getTime()));
+    }
+    
+    private void updateTimeDisplay() {
+        tvTime.setText(String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute));
     }
     
     private void setupClickListeners() {
         // Back button
         MaterialButton btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(v -> finish());
+        
+        // Date picker
+        dateContainer.setOnClickListener(v -> showDatePicker());
+        
+        // Time picker
+        timeContainer.setOnClickListener(v -> showTimePicker());
         
         // Mood selection buttons
         btnVeryGood.setOnClickListener(v -> selectMood(5, btnVeryGood));
@@ -114,6 +135,60 @@ public class MoodSelectionActivity extends AppCompatActivity {
         });
     }
     
+    private void showDatePicker() {
+        Calendar today = Calendar.getInstance();
+        
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+            this,
+            (view, selectedYear, selectedMonth, selectedDay) -> {
+                // Check if selected date is not in the future
+                Calendar selectedDate = Calendar.getInstance();
+                selectedDate.set(selectedYear, selectedMonth, selectedDay);
+                
+                Calendar todayDate = Calendar.getInstance();
+                todayDate.set(Calendar.HOUR_OF_DAY, 23);
+                todayDate.set(Calendar.MINUTE, 59);
+                todayDate.set(Calendar.SECOND, 59);
+                
+                if (selectedDate.after(todayDate)) {
+                    Toast.makeText(this, "Cannot select future dates", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                
+                year = selectedYear;
+                month = selectedMonth;
+                day = selectedDay;
+                updateDateDisplay();
+                updateTimestamp();
+            },
+            year, month, day
+        );
+        
+        // Set max date to today
+        datePickerDialog.getDatePicker().setMaxDate(today.getTimeInMillis());
+        datePickerDialog.show();
+    }
+    
+    private void showTimePicker() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+            this,
+            (view, hourOfDay, minute) -> {
+                selectedHour = hourOfDay;
+                selectedMinute = minute;
+                updateTimeDisplay();
+                updateTimestamp();
+            },
+            selectedHour, selectedMinute, true
+        );
+        timePickerDialog.show();
+    }
+    
+    private void updateTimestamp() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, selectedHour, selectedMinute, 0);
+        entryTimestamp = calendar.getTimeInMillis();
+    }
+    
     private void selectMood(int mood, ImageView button) {
         // Reset previous selection
         if (currentlySelected != null && currentlySelected != button) {
@@ -123,8 +198,8 @@ public class MoodSelectionActivity extends AppCompatActivity {
         selectedMood = mood;
         currentlySelected = button;
         
-        // Animate selected button
-        animateScale(button, 1.3f);
+        // Animate selected button (smaller scale than before)
+        animateScale(button, 1.15f);
         
         // Enable continue button
         btnContinue.setEnabled(true);

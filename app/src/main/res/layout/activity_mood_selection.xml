@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#1E1E1E"
+    android:fitsSystemWindows="true"
     tools:context=".MoodSelectionActivity">
 
     <!-- Header with back button and save button -->
@@ -97,12 +98,15 @@
 
                 <!-- Date -->
                 <LinearLayout
+                    android:id="@+id/date_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center"
                     android:background="@drawable/edit_text_background"
-                    android:padding="12dp">
+                    android:padding="12dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -127,12 +131,15 @@
 
                 <!-- Time -->
                 <LinearLayout
+                    android:id="@+id/time_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center"
                     android:background="@drawable/edit_text_background"
-                    android:padding="12dp">
+                    android:padding="12dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <TextView
                         android:layout_width="wrap_content"

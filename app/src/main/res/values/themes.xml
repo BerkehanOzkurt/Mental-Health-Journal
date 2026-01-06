@@ -1,11 +1,51 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme (Dark) -->
     <style name="Base.Theme.MentalHealthJournal" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Primary colors -->
+        <item name="colorPrimary">#4CAF50</item>
+        <item name="colorPrimaryVariant">#388E3C</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        
+        <!-- Secondary colors -->
+        <item name="colorSecondary">#81C784</item>
+        <item name="colorSecondaryVariant">#66BB6A</item>
+        <item name="colorOnSecondary">@android:color/black</item>
+        
+        <!-- Background colors -->
+        <item name="android:colorBackground">#1E1E1E</item>
+        <item name="colorSurface">#2C2C2C</item>
+        <item name="colorOnSurface">@android:color/white</item>
+        
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">#1E1E1E</item>
     </style>
 
     <style name="Theme.MentalHealthJournal" parent="Base.Theme.MentalHealthJournal" />
+    
+    <!-- Light Theme -->
+    <style name="Theme.MentalHealthJournal.Light" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Primary colors -->
+        <item name="colorPrimary">#4CAF50</item>
+        <item name="colorPrimaryVariant">#388E3C</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        
+        <!-- Secondary colors -->
+        <item name="colorSecondary">#81C784</item>
+        <item name="colorSecondaryVariant">#66BB6A</item>
+        <item name="colorOnSecondary">@android:color/black</item>
+        
+        <!-- Background colors -->
+        <item name="android:colorBackground">#FAFAFA</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorOnSurface">@android:color/black</item>
+        
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
 
     <!-- Custom PopupMenu style with rounded corners -->
     <style name="CustomPopupMenu" parent="Widget.Material3.PopupMenu">

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
@@ -31,6 +32,7 @@ public class CalendarActivity extends AppCompatActivity {
     private MaterialButton btnPrevMonth, btnNextMonth;
     
     private Calendar currentCalendar;
+    private Calendar todayCalendar;
     private JournalRepository repository;
     private Map<String, Integer> moodByDate = new HashMap<>();
 
@@ -44,6 +46,7 @@ public class CalendarActivity extends AppCompatActivity {
         
         // Initialize calendar to current month
         currentCalendar = Calendar.getInstance();
+        todayCalendar = Calendar.getInstance();
 
         // Initialize views
         calendarGrid = findViewById(R.id.calendar_grid);
@@ -58,6 +61,18 @@ public class CalendarActivity extends AppCompatActivity {
         });
 
         btnNextMonth.setOnClickListener(v -> {
+            // Check if we can go to next month (only if it's not future)
+            Calendar nextMonth = (Calendar) currentCalendar.clone();
+            nextMonth.add(Calendar.MONTH, 1);
+            
+            if (nextMonth.get(Calendar.YEAR) > todayCalendar.get(Calendar.YEAR) ||
+                (nextMonth.get(Calendar.YEAR) == todayCalendar.get(Calendar.YEAR) && 
+                 nextMonth.get(Calendar.MONTH) > todayCalendar.get(Calendar.MONTH))) {
+                // Don't allow going to future months
+                Toast.makeText(this, "Cannot go to future months", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
             currentCalendar.add(Calendar.MONTH, 1);
             loadCalendar();
         });
@@ -104,9 +119,25 @@ public class CalendarActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.navigation_calendar);
         // Reload calendar data
         loadCalendar();
+        updateNextButtonState();
+    }
+
+    private void updateNextButtonState() {
+        // Disable next button if we're at current month
+        Calendar nextMonth = (Calendar) currentCalendar.clone();
+        nextMonth.add(Calendar.MONTH, 1);
+        
+        boolean isFutureMonth = nextMonth.get(Calendar.YEAR) > todayCalendar.get(Calendar.YEAR) ||
+            (nextMonth.get(Calendar.YEAR) == todayCalendar.get(Calendar.YEAR) && 
+             nextMonth.get(Calendar.MONTH) > todayCalendar.get(Calendar.MONTH));
+        
+        btnNextMonth.setAlpha(isFutureMonth ? 0.3f : 1.0f);
     }
 
     private void loadCalendar() {
+        // Update next button state
+        updateNextButtonState();
+        
         // Update month/year display
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
         tvMonthYear.setText(sdf.format(currentCalendar.getTime()));
@@ -176,8 +207,11 @@ public class CalendarActivity extends AppCompatActivity {
                 final int day = dayCounter;
                 tvDayNumber.setText(String.valueOf(day));
                 
-                // Check if there's an entry for this day
+                // Check if this day is in the future
                 cal.set(Calendar.DAY_OF_MONTH, day);
+                boolean isFutureDay = isFutureDate(cal);
+                
+                // Check if there's an entry for this day
                 String dateKey = dayFormat.format(cal.getTime());
                 
                 if (moodByDate.containsKey(dateKey)) {
@@ -189,9 +223,18 @@ public class CalendarActivity extends AppCompatActivity {
                     
                     // Click to edit entry
                     imgEmoji.setOnClickListener(v -> openAddEntry(day));
-                } else {
-                    // Show add button
+                } else if (isFutureDay) {
+                    // Future day - show disabled state
                     btnAddEntry.setVisibility(View.VISIBLE);
+                    btnAddEntry.setAlpha(0.3f);
+                    imgEmoji.setVisibility(View.GONE);
+                    btnAddEntry.setOnClickListener(v -> {
+                        Toast.makeText(this, "This day is yet to come", Toast.LENGTH_SHORT).show();
+                    });
+                } else {
+                    // Past or today - show add button
+                    btnAddEntry.setVisibility(View.VISIBLE);
+                    btnAddEntry.setAlpha(1.0f);
                     imgEmoji.setVisibility(View.GONE);
                     btnAddEntry.setOnClickListener(v -> openAddEntry(day));
                 }
@@ -208,6 +251,22 @@ public class CalendarActivity extends AppCompatActivity {
             
             calendarGrid.addView(dayView);
         }
+    }
+    
+    private boolean isFutureDate(Calendar date) {
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+        
+        Calendar checkDate = (Calendar) date.clone();
+        checkDate.set(Calendar.HOUR_OF_DAY, 0);
+        checkDate.set(Calendar.MINUTE, 0);
+        checkDate.set(Calendar.SECOND, 0);
+        checkDate.set(Calendar.MILLISECOND, 0);
+        
+        return checkDate.after(today);
     }
     
     private int getMoodDrawable(int mood) {

@@ -107,6 +107,13 @@ public class SettingsActivity extends AppCompatActivity {
         // Daily reminder toggle
         switchDailyReminder.setOnCheckedChangeListener((buttonView, isChecked) -> {
             prefs.edit().putBoolean(KEY_DAILY_REMINDER, isChecked).apply();
+            if (isChecked) {
+                int hour = prefs.getInt(KEY_REMINDER_HOUR, 20);
+                int minute = prefs.getInt(KEY_REMINDER_MINUTE, 0);
+                ReminderReceiver.scheduleReminder(this, hour, minute);
+            } else {
+                ReminderReceiver.cancelReminder(this);
+            }
             showToast(isChecked ? "Daily reminder enabled" : "Daily reminder disabled");
         });
 
@@ -164,11 +171,50 @@ public class SettingsActivity extends AppCompatActivity {
                     String selectedTheme = themes[which];
                     prefs.edit().putString(KEY_THEME, selectedTheme).apply();
                     themeValue.setText(selectedTheme);
+                    applyTheme(selectedTheme);
                     showToast("Theme changed to " + selectedTheme);
                     dialog.dismiss();
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    private void applyTheme(String theme) {
+        switch (theme) {
+            case "Light":
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                    androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "Dark":
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                    androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case "System Default":
+            default:
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                    androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+        }
+    }
+
+    public static void applyStoredTheme(android.content.Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String theme = prefs.getString(KEY_THEME, "Dark");
+        switch (theme) {
+            case "Light":
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                    androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case "Dark":
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                    androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case "System Default":
+            default:
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                    androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+        }
     }
 
     private void showStartWeekDialog() {
@@ -205,6 +251,12 @@ public class SettingsActivity extends AppCompatActivity {
                             .putInt(KEY_REMINDER_MINUTE, minuteOfHour)
                             .apply();
                     reminderTimeValue.setText(String.format(Locale.US, "%02d:%02d", hourOfDay, minuteOfHour));
+                    
+                    // Reschedule reminder if enabled
+                    if (prefs.getBoolean(KEY_DAILY_REMINDER, true)) {
+                        ReminderReceiver.scheduleReminder(this, hourOfDay, minuteOfHour);
+                    }
+                    
                     showToast("Reminder set for " + String.format(Locale.US, "%02d:%02d", hourOfDay, minuteOfHour));
                 }, hour, minute, true);
         timePickerDialog.show();

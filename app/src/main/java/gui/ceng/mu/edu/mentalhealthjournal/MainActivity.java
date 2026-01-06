@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Apply stored theme before calling super
+        SettingsActivity.applyStoredTheme(this);
+        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -168,7 +171,15 @@ public class MainActivity extends AppCompatActivity {
                     .show();
             }
         });
+        
         recyclerView.setAdapter(adapter);
+        
+        // View All button
+        MaterialButton btnViewAll = findViewById(R.id.btn_view_all);
+        btnViewAll.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AllEntriesActivity.class);
+            startActivity(intent);
+        });
     }
 
     /**
@@ -274,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Update the streak counter based on consecutive days with entries
+     * Calculates from today backwards - counts consecutive days with entries
      */
     private void updateStreak(List<JournalEntryEntity> entities) {
         if (entities == null || entities.isEmpty()) {
@@ -281,46 +293,53 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Calculate streak - count consecutive days with entries
-        int streak = 0;
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 0);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
-        today.set(Calendar.MILLISECOND, 0);
-
-        Calendar entryDate = Calendar.getInstance();
-        Calendar checkDate = (Calendar) today.clone();
-
-        boolean hasEntryToday = false;
+        // Create a set of dates that have entries
+        java.util.Set<String> datesWithEntries = new java.util.HashSet<>();
+        java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyyMMdd", java.util.Locale.US);
+        
         for (JournalEntryEntity entity : entities) {
-            entryDate.setTimeInMillis(entity.getTimestamp());
-            if (isSameDay(entryDate, today)) {
-                hasEntryToday = true;
-                break;
-            }
+            String dateKey = dateFormat.format(new java.util.Date(entity.getTimestamp()));
+            datesWithEntries.add(dateKey);
         }
 
-        if (hasEntryToday) {
+        // Start from today and go backwards
+        Calendar checkDate = Calendar.getInstance();
+        int streak = 0;
+        
+        // Check today first
+        String todayKey = dateFormat.format(checkDate.getTime());
+        if (datesWithEntries.contains(todayKey)) {
             streak = 1;
             checkDate.add(Calendar.DAY_OF_YEAR, -1);
-        }
-
-        // Check previous days
-        while (true) {
-            boolean foundEntry = false;
-            for (JournalEntryEntity entity : entities) {
-                entryDate.setTimeInMillis(entity.getTimestamp());
-                if (isSameDay(entryDate, checkDate)) {
-                    foundEntry = true;
+            
+            // Continue checking previous days
+            while (true) {
+                String dateKey = dateFormat.format(checkDate.getTime());
+                if (datesWithEntries.contains(dateKey)) {
+                    streak++;
+                    checkDate.add(Calendar.DAY_OF_YEAR, -1);
+                } else {
                     break;
                 }
             }
-            if (foundEntry) {
-                streak++;
+        } else {
+            // No entry today, check if yesterday has entry and start from there
+            checkDate.add(Calendar.DAY_OF_YEAR, -1);
+            String yesterdayKey = dateFormat.format(checkDate.getTime());
+            
+            if (datesWithEntries.contains(yesterdayKey)) {
+                streak = 1;
                 checkDate.add(Calendar.DAY_OF_YEAR, -1);
-            } else {
-                break;
+                
+                while (true) {
+                    String dateKey = dateFormat.format(checkDate.getTime());
+                    if (datesWithEntries.contains(dateKey)) {
+                        streak++;
+                        checkDate.add(Calendar.DAY_OF_YEAR, -1);
+                    } else {
+                        break;
+                    }
+                }
             }
         }
 

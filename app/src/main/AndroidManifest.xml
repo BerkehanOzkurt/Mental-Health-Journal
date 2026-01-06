@@ -11,6 +11,9 @@
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-feature android:name="android.hardware.microphone" android:required="false" />
@@ -45,13 +48,37 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".CalendarActivity" />
-        <activity android:name=".StatsActivity" />
-        <activity android:name=".MoreActivity" />
+        <activity android:name=".MainActivity" 
+            android:launchMode="singleTop" />
+        <activity android:name=".CalendarActivity"
+            android:launchMode="singleTop" />
+        <activity android:name=".StatsActivity"
+            android:launchMode="singleTop" />
+        <activity android:name=".MoreActivity"
+            android:launchMode="singleTop" />
         <activity android:name=".AddEntryActivity" />
         <activity android:name=".MoodSelectionActivity" />
         <activity android:name=".SettingsActivity" />
+        <activity android:name=".EntryViewActivity" />
+        <activity android:name=".AllEntriesActivity" />
+        <activity android:name=".PhotoGalleryActivity" />
+        <activity android:name=".VoiceMemosActivity" />
+        <activity android:name=".EditMoodsActivity" />
+        <activity android:name=".EditActivitiesActivity" />
+        <activity android:name=".HelpActivity" />
+
+        <!-- Notification Receiver -->
+        <receiver
+            android:name=".ReminderReceiver"
+            android:exported="false" />
+        
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
