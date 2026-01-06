@@ -8,4 +8,35 @@
     <color name="normal">#2196F3</color>
     <color name="bad">#FF9800</color>
     <color name="very_bad">#F44336</color>
+
+    <!-- Warning colors for character count -->
+    <color name="warning_yellow">#FFC107</color>
+    <color name="warning_orange">#FF9800</color>
+    <color name="error_red">#F44336</color>
+    
+    <!-- Primary colors -->
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    
+    <!-- Text colors -->
+    <color name="text_secondary">#757575</color>
+    
+    <!-- Emotion colors -->
+    <color name="emotion_happy">#FFD54F</color>
+    <color name="emotion_sad">#90CAF9</color>
+    <color name="emotion_anxious">#FFAB91</color>
+    <color name="emotion_calm">#A5D6A7</color>
+    <color name="emotion_angry">#EF5350</color>
+    <color name="emotion_grateful">#CE93D8</color>
+    <color name="emotion_stressed">#FF8A65</color>
+    <color name="emotion_excited">#FFD54F</color>
+    <color name="emotion_lonely">#B0BEC5</color>
+    <color name="emotion_hopeful">#81D4FA</color>
+    <color name="emotion_confused">#BCAAA4</color>
+    <color name="emotion_peaceful">#80CBC4</color>
+    <color name="emotion_overwhelmed">#F48FB1</color>
+    <color name="emotion_custom">#B39DDB</color>
+    
+    <!-- Activity colors -->
+    <color name="activity_custom">#90A4AE</color>
 </resources>

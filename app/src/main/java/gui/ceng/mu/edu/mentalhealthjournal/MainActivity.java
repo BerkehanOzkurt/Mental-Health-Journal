@@ -371,11 +371,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Update user name from SharedPreferences
+     * Update user name from SharedPreferences using OnboardingManager
      */
     private void updateUserName() {
-        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        String userName = prefs.getString("user_name", "User");
+        gui.ceng.mu.edu.mentalhealthjournal.util.OnboardingManager onboardingManager = 
+                new gui.ceng.mu.edu.mentalhealthjournal.util.OnboardingManager(this);
+        String userName = onboardingManager.getUserName();
         userNameText.setText(userName + " 👋");
     }
 

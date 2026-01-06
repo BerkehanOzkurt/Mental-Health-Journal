@@ -12,17 +12,24 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import gui.ceng.mu.edu.mentalhealthjournal.util.OnboardingManager;
+
 /**
  * PIN Lock Activity with support for:
  * - PIN verification (normal app launch)
  * - PIN setup (first time enabling)
  * - PIN change (from settings)
+ * - First-launch onboarding
  */
 public class PinActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String PREFS_NAME = "app_prefs";
     private static final String KEY_PIN = "user_pin";
     private static final String KEY_PIN_ENABLED = "pin_enabled";
+    
+    public static final String EXTRA_FROM_ONBOARDING = "from_onboarding";
+
+    private OnboardingManager onboardingManager;
 
     private enum Mode {
         VERIFY,     // Verify existing PIN
@@ -35,6 +42,7 @@ public class PinActivity extends AppCompatActivity implements View.OnClickListen
     private Mode currentMode = Mode.VERIFY;
     private String enteredPin = "";
     private String newPinToConfirm = "";
+    private boolean isFirstLaunchSetup = false;
     
     private SharedPreferences prefs;
     private TextView titleText;
@@ -42,6 +50,7 @@ public class PinActivity extends AppCompatActivity implements View.OnClickListen
     private ImageView[] pinDots;
     private Button button0, button1, button2, button3, button4, button5, button6, button7, button8, button9;
     private ImageButton buttonBackspace;
+    private TextView buttonSkip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +58,58 @@ public class PinActivity extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_pin);
 
         prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        onboardingManager = new OnboardingManager(this);
+
+        // Check for first launch - redirect to OnboardingActivity
+        if (onboardingManager.isFirstLaunch()) {
+            launchOnboardingActivity();
+            return;
+        }
+        
+        // Check if coming from onboarding - show PIN setup with skip option
+        boolean fromOnboarding = getIntent().getBooleanExtra(EXTRA_FROM_ONBOARDING, false);
+        if (fromOnboarding) {
+            initViews();
+            currentMode = Mode.CREATE;
+            updateUI();
+            // Show skip button during first-time PIN creation
+            if (buttonSkip != null) {
+                buttonSkip.setVisibility(View.VISIBLE);
+            }
+            return;
+        }
+
+        // If PIN is not enabled and not in setup/change mode, skip directly to MainActivity
+        boolean pinEnabled = prefs.getBoolean(KEY_PIN_ENABLED, false);
+        boolean setupMode = getIntent().getBooleanExtra("setup_mode", false);
+        boolean changePin = getIntent().getBooleanExtra("change_pin", false);
+        
+        if (!pinEnabled && !setupMode && !changePin) {
+            proceedToMain();
+            return;
+        }
         
         initViews();
         determineMode();
         updateUI();
+    }
+
+    /**
+     * Launches the OnboardingActivity to capture the user's name.
+     */
+    private void launchOnboardingActivity() {
+        Intent intent = new Intent(this, OnboardingActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Navigate to MainActivity and finish this activity.
+     */
+    private void proceedToMain() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void initViews() {
@@ -89,6 +146,17 @@ public class PinActivity extends AppCompatActivity implements View.OnClickListen
         button8.setOnClickListener(this);
         button9.setOnClickListener(this);
         buttonBackspace.setOnClickListener(this);
+        
+        // Initialize skip button for first-time PIN setup
+        buttonSkip = findViewById(R.id.button_skip);
+        if (buttonSkip != null) {
+            buttonSkip.setOnClickListener(v -> {
+                // Skip PIN setup and proceed to main
+                proceedToMain();
+            });
+            // Hide skip button by default (only show during first launch PIN setup)
+            buttonSkip.setVisibility(View.GONE);
+        }
     }
 
     private void determineMode() {
@@ -187,9 +255,7 @@ public class PinActivity extends AppCompatActivity implements View.OnClickListen
         String storedPin = prefs.getString(KEY_PIN, null);
         if (enteredPin.equals(storedPin)) {
             // Correct PIN - proceed to main
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            proceedToMain();
         } else {
             showError("Incorrect PIN");
         }
@@ -210,9 +276,7 @@ public class PinActivity extends AppCompatActivity implements View.OnClickListen
                 getIntent().getBooleanExtra("change_pin", false)) {
                 finish();
             } else {
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                proceedToMain();
             }
         } else {
             showError("PINs don't match. Try again.");

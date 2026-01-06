@@ -13,8 +13,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import gui.ceng.mu.edu.mentalhealthjournal.data.repository.JournalRepository;
+import gui.ceng.mu.edu.mentalhealthjournal.util.BackupManager;
 
 import java.util.Calendar;
 
@@ -25,6 +27,7 @@ import java.util.Calendar;
 public class MoreActivity extends AppCompatActivity {
 
     private JournalRepository repository;
+    private BackupManager backupManager;
     private Handler mainHandler;
 
     // Views for displaying counts
@@ -42,6 +45,7 @@ public class MoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_more);
 
         repository = new JournalRepository(this);
+        backupManager = new BackupManager(this);
         mainHandler = new Handler(Looper.getMainLooper());
 
         initViews();
@@ -125,16 +129,56 @@ public class MoreActivity extends AppCompatActivity {
 
     private void showBackupRestoreDialog() {
         String[] options = {"Backup Data", "Restore Data"};
-        new android.app.AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Backup & Restore")
                 .setItems(options, (dialog, which) -> {
                     if (which == 0) {
-                        showToast("Backup feature coming soon!");
+                        performBackup();
                     } else {
-                        showToast("Restore feature coming soon!");
+                        performRestore();
                     }
                 })
                 .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void performBackup() {
+        backupManager.createBackup(new BackupManager.BackupCallback() {
+            @Override
+            public void onSuccess(String message) {
+                mainHandler.post(() -> showToast(getString(R.string.backup_success)));
+            }
+
+            @Override
+            public void onError(String error) {
+                mainHandler.post(() -> showToast(getString(R.string.backup_failed) + ": " + error));
+            }
+        });
+    }
+
+    private void performRestore() {
+        if (!backupManager.hasBackup()) {
+            showToast(getString(R.string.no_backup_found));
+            return;
+        }
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.confirm_restore)
+                .setMessage(R.string.restore_warning)
+                .setPositiveButton(R.string.restore, (dialog, which) -> {
+                    backupManager.restoreFromBackup(new BackupManager.BackupCallback() {
+                        @Override
+                        public void onSuccess(String message) {
+                            mainHandler.post(() -> showToast(getString(R.string.restore_success)));
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            mainHandler.post(() -> showToast(getString(R.string.restore_failed) + ": " + error));
+                        }
+                    });
+                })
+                .setNegativeButton(R.string.cancel, null)
                 .show();
     }
 

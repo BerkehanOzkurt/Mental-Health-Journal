@@ -58,6 +58,7 @@
             android:launchMode="singleTop" />
         <activity android:name=".AddEntryActivity" />
         <activity android:name=".MoodSelectionActivity" />
+        <activity android:name=".OnboardingActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".EntryViewActivity" />
         <activity android:name=".AllEntriesActivity" />
@@ -66,6 +67,8 @@
         <activity android:name=".EditMoodsActivity" />
         <activity android:name=".EditActivitiesActivity" />
         <activity android:name=".HelpActivity" />
+        <activity android:name=".NoteEditorActivity" 
+            android:windowSoftInputMode="stateVisible|adjustResize" />
 
         <!-- Notification Receiver -->
         <receiver

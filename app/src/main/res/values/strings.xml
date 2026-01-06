@@ -3,4 +3,67 @@
     <string name="mental_health_journal">Mental Health Journal</string>
     <string name="enter_pin_to_unlock">Enter PIN to unlock</string>
     <string name="lock_icon">Lock Icon</string>
+
+    <!-- Onboarding -->
+    <string name="welcome_icon">Welcome icon</string>
+    <string name="welcome_to_journal">Welcome! 👋</string>
+    <string name="welcome_message">Your personal space for reflection and growth. What should we call you?</string>
+    <string name="your_name_hint">Your name</string>
+    <string name="privacy_note">Your data stays private on your device</string>
+    <string name="get_started">Get Started</string>
+
+    <!-- Note Editor -->
+    <string name="write_your_thoughts">Write Your Thoughts</string>
+    <string name="note_hint">How are you feeling today? What\'s on your mind?</string>
+    <string name="save_note">Save Note</string>
+    <string name="discard_changes">Discard changes?</string>
+    <string name="discard_message">You have unsaved changes. Are you sure you want to discard them?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+    <string name="note_saved">Note saved</string>
+    <string name="auto_saved">Auto-saved</string>
+
+    <!-- Edit Moods/Activities -->
+    <string name="add_custom_mood">Add Custom Mood</string>
+    <string name="add_custom_activity">Add Custom Activity</string>
+    <string name="edit_mood">Edit Mood</string>
+    <string name="edit_activity">Edit Activity</string>
+    <string name="mood_name_hint">Mood name</string>
+    <string name="activity_name_hint">Activity name</string>
+    <string name="select_emoji">Select an emoji</string>
+    <string name="select_icon">Select an icon</string>
+    <string name="add">Add</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="cannot_delete_default">Cannot delete default items</string>
+    <string name="mood_added">Mood added</string>
+    <string name="activity_added">Activity added</string>
+    <string name="mood_deleted">Mood deleted</string>
+    <string name="activity_deleted">Activity deleted</string>
+    <string name="undo">Undo</string>
+    <string name="mood_already_exists">A mood with this name already exists</string>
+    <string name="activity_already_exists">An activity with this name already exists</string>
+
+    <!-- Backup/Export -->
+    <string name="backup_data">Backup Data</string>
+    <string name="restore_data">Restore Data</string>
+    <string name="export_data">Export Data</string>
+    <string name="import_data">Import Data</string>
+    <string name="backup_success">Backup created successfully</string>
+    <string name="backup_failed">Failed to create backup</string>
+    <string name="restore_success">Data restored successfully</string>
+    <string name="restore_failed">Failed to restore data</string>
+    <string name="export_success">Data exported successfully</string>
+    <string name="export_failed">Failed to export data</string>
+    <string name="import_success">Data imported successfully</string>
+    <string name="import_failed">Failed to import data</string>
+    <string name="confirm_restore">Restore from backup?</string>
+    <string name="restore_warning">This will replace all current data with the backup. This action cannot be undone.</string>
+    <string name="restore">Restore</string>
+    <string name="no_backup_found">No backup found</string>
+    <string name="select_backup_file">Select backup file</string>
+
+    <!-- Person icon content description -->
+    <string name="person_icon">Person icon</string>
 </resources>

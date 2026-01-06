@@ -92,6 +92,7 @@ public class AddEntryActivity extends AppCompatActivity {
     // Activity Result Launchers
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
+    private ActivityResultLauncher<Intent> noteEditorLauncher;
     private ActivityResultLauncher<String[]> permissionLauncher;
 
     @Override
@@ -165,6 +166,19 @@ public class AddEntryActivity extends AppCompatActivity {
                         if (photoPath != null) {
                             showPhotoPreview(Uri.fromFile(new File(photoPath)));
                         }
+                    }
+                }
+            }
+        );
+
+        // Note editor launcher
+        noteEditorLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    String note = result.getData().getStringExtra(NoteEditorActivity.RESULT_NOTE);
+                    if (note != null && editQuickNote != null) {
+                        editQuickNote.setText(note);
                     }
                 }
             }
@@ -275,10 +289,7 @@ public class AddEntryActivity extends AppCompatActivity {
 
         // Open full note
         TextView btnOpenFullNote = findViewById(R.id.btn_open_full_note);
-        btnOpenFullNote.setOnClickListener(v -> {
-            // TODO: Open full note editor activity
-            Toast.makeText(this, "Full note editor coming soon!", Toast.LENGTH_SHORT).show();
-        });
+        btnOpenFullNote.setOnClickListener(v -> openFullNoteEditor());
 
         // Take photo
         MaterialButton btnTakePhoto = findViewById(R.id.btn_take_photo);
@@ -297,6 +308,21 @@ public class AddEntryActivity extends AppCompatActivity {
         btnEditActivities.setOnClickListener(v -> {
             Toast.makeText(this, "Edit activities coming soon!", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    // ===================== NOTE EDITOR =====================
+
+    /**
+     * Opens the full-screen note editor with the current note content.
+     */
+    private void openFullNoteEditor() {
+        String currentNote = "";
+        if (editQuickNote != null && editQuickNote.getText() != null) {
+            currentNote = editQuickNote.getText().toString();
+        }
+        
+        Intent intent = NoteEditorActivity.createIntent(this, (int) editEntryId, currentNote);
+        noteEditorLauncher.launch(intent);
     }
 
     // ===================== CAMERA FUNCTIONALITY =====================

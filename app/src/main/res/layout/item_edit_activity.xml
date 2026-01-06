@@ -37,6 +37,20 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+        <!-- Default Badge -->
+        <TextView
+            android:id="@+id/default_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/badge_background"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:text="Default"
+            android:textColor="?attr/colorOnSecondaryContainer"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
         <!-- Edit Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_edit"

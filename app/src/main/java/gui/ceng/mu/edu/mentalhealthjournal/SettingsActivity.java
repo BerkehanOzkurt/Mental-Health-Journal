@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
@@ -12,10 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import gui.ceng.mu.edu.mentalhealthjournal.data.repository.JournalRepository;
+import gui.ceng.mu.edu.mentalhealthjournal.util.BackupManager;
 
 import java.util.Locale;
 
@@ -36,6 +42,12 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
     private JournalRepository repository;
+    private BackupManager backupManager;
+    private Handler mainHandler;
+
+    // Activity result launchers for file picker
+    private ActivityResultLauncher<String> exportLauncher;
+    private ActivityResultLauncher<String[]> importLauncher;
 
     // Views
     private TextView themeValue;
@@ -52,10 +64,35 @@ public class SettingsActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         repository = new JournalRepository(this);
+        backupManager = new BackupManager(this);
+        mainHandler = new Handler(Looper.getMainLooper());
 
+        setupActivityLaunchers();
         initViews();
         loadSettings();
         setupClickListeners();
+    }
+
+    private void setupActivityLaunchers() {
+        // Export launcher - creates a new file
+        exportLauncher = registerForActivityResult(
+                new ActivityResultContracts.CreateDocument("application/json"),
+                uri -> {
+                    if (uri != null) {
+                        exportDataToUri(uri);
+                    }
+                }
+        );
+
+        // Import launcher - opens existing file
+        importLauncher = registerForActivityResult(
+                new ActivityResultContracts.OpenDocument(),
+                uri -> {
+                    if (uri != null) {
+                        importDataFromUri(uri);
+                    }
+                }
+        );
     }
 
     private void initViews() {
@@ -140,12 +177,15 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         // Export data
-        findViewById(R.id.setting_export_data).setOnClickListener(v -> 
-            showToast("Export feature coming soon!"));
+        findViewById(R.id.setting_export_data).setOnClickListener(v -> {
+            String filename = backupManager.generateExportFilename();
+            exportLauncher.launch(filename);
+        });
 
         // Import data
-        findViewById(R.id.setting_import_data).setOnClickListener(v -> 
-            showToast("Import feature coming soon!"));
+        findViewById(R.id.setting_import_data).setOnClickListener(v -> {
+            importLauncher.launch(new String[]{"application/json"});
+        });
 
         // Clear all data
         findViewById(R.id.setting_clear_data).setOnClickListener(v -> showClearDataDialog());
@@ -294,6 +334,41 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 })
                 .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void exportDataToUri(Uri uri) {
+        backupManager.exportToUri(uri, new BackupManager.BackupCallback() {
+            @Override
+            public void onSuccess(String message) {
+                mainHandler.post(() -> showToast(message));
+            }
+
+            @Override
+            public void onError(String error) {
+                mainHandler.post(() -> showToast(error));
+            }
+        });
+    }
+
+    private void importDataFromUri(Uri uri) {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.confirm_restore)
+                .setMessage(R.string.restore_warning)
+                .setPositiveButton(R.string.import_data, (dialog, which) -> {
+                    backupManager.importFromUri(uri, new BackupManager.BackupCallback() {
+                        @Override
+                        public void onSuccess(String message) {
+                            mainHandler.post(() -> showToast(message));
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            mainHandler.post(() -> showToast(error));
+                        }
+                    });
+                })
+                .setNegativeButton(R.string.cancel, null)
                 .show();
     }
 
