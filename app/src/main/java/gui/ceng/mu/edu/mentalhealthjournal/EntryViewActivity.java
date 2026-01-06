@@ -1,18 +1,19 @@
 package gui.ceng.mu.edu.mentalhealthjournal;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.google.android.material.button.MaterialButton;
@@ -21,60 +22,41 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import gui.ceng.mu.edu.mentalhealthjournal.data.entity.JournalEntryEntity;
 import gui.ceng.mu.edu.mentalhealthjournal.data.repository.JournalRepository;
+import gui.ceng.mu.edu.mentalhealthjournal.util.DateUtils;
+import gui.ceng.mu.edu.mentalhealthjournal.util.MoodUtils;
 
-/**
- * Activity for viewing a journal entry's full details.
- * Shows mood, emotions, sleep tags, notes, photos, and voice memos.
- */
 public class EntryViewActivity extends AppCompatActivity {
 
     public static final String EXTRA_ENTRY_ID = "entry_id";
 
     private JournalRepository repository;
-    private Handler mainHandler;
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
     private MediaPlayer mediaPlayer;
     private boolean isPlaying = false;
 
-    // Views
     private ImageView moodIcon;
-    private TextView moodLabel;
-    private TextView dateTimeText;
-    private TextView noteText;
-    private ChipGroup emotionsChipGroup;
-    private ChipGroup sleepChipGroup;
-    private LinearLayout emotionsContainer;
-    private LinearLayout sleepContainer;
-    private LinearLayout noteContainer;
-    private LinearLayout photoContainer;
-    private LinearLayout voiceContainer;
+    private TextView moodLabel, dateTimeText, noteText;
+    private ChipGroup emotionsChipGroup, sleepChipGroup;
+    private LinearLayout emotionsContainer, sleepContainer;
+    private View noteContainer, photoContainer, voiceContainer;
     private ImageView photoPreview;
     private MaterialButton playVoiceButton;
-
-    private JournalEntryEntity currentEntry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry_view);
-
         repository = new JournalRepository(this);
-        mainHandler = new Handler(Looper.getMainLooper());
-
         initViews();
         loadEntry();
     }
 
     private void initViews() {
-        // Back button
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
-
         moodIcon = findViewById(R.id.mood_icon);
         moodLabel = findViewById(R.id.mood_label);
         dateTimeText = findViewById(R.id.date_time_text);
@@ -92,181 +74,78 @@ public class EntryViewActivity extends AppCompatActivity {
 
     private void loadEntry() {
         long entryId = getIntent().getLongExtra(EXTRA_ENTRY_ID, -1);
-        if (entryId == -1) {
-            Toast.makeText(this, "Entry not found", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        if (entryId == -1) { Toast.makeText(this, "Entry not found", Toast.LENGTH_SHORT).show(); finish(); return; }
 
         repository.getEntryById(entryId, new JournalRepository.RepositoryCallback<JournalEntryEntity>() {
-            @Override
-            public void onComplete(JournalEntryEntity entry) {
-                mainHandler.post(() -> {
-                    if (entry != null) {
-                        currentEntry = entry;
-                        displayEntry(entry);
-                    } else {
-                        Toast.makeText(EntryViewActivity.this, "Entry not found", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                });
+            @Override public void onComplete(JournalEntryEntity entry) {
+                mainHandler.post(() -> { if (entry != null) displayEntry(entry); else { Toast.makeText(EntryViewActivity.this, "Entry not found", Toast.LENGTH_SHORT).show(); finish(); } });
             }
-
-            @Override
-            public void onError(Exception e) {
-                mainHandler.post(() -> {
-                    Toast.makeText(EntryViewActivity.this, "Error loading entry", Toast.LENGTH_SHORT).show();
-                    finish();
-                });
+            @Override public void onError(Exception e) {
+                mainHandler.post(() -> { Toast.makeText(EntryViewActivity.this, "Error loading entry", Toast.LENGTH_SHORT).show(); finish(); });
             }
         });
     }
 
     private void displayEntry(JournalEntryEntity entry) {
-        // Set mood icon and label
         moodIcon.setImageResource(entry.getMoodIconResource());
         moodIcon.setBackgroundResource(entry.getMoodBackgroundResource());
-        moodLabel.setText(getMoodLabel(entry.getMoodLevel()));
-        moodLabel.setTextColor(getMoodColor(entry.getMoodLevel()));
+        moodLabel.setText(MoodUtils.getText(entry.getMoodLevel()));
+        moodLabel.setTextColor(ContextCompat.getColor(this, MoodUtils.getColorRes(entry.getMoodLevel())));
+        dateTimeText.setText(DateUtils.format(entry.getTimestamp(), "EEEE, d MMMM yyyy • HH:mm"));
 
-        // Set date and time
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy • HH:mm", Locale.getDefault());
-        dateTimeText.setText(dateFormat.format(new Date(entry.getTimestamp())));
+        setupChips(entry.getEmotions(), emotionsContainer, emotionsChipGroup, R.color.very_good);
+        setupChips(entry.getSleepTags(), sleepContainer, sleepChipGroup, R.color.normal);
 
-        // Set emotions
-        List<String> emotions = entry.getEmotions();
-        if (emotions != null && !emotions.isEmpty()) {
-            emotionsContainer.setVisibility(View.VISIBLE);
-            emotionsChipGroup.removeAllViews();
-            for (String emotion : emotions) {
-                Chip chip = new Chip(this);
-                chip.setText(emotion);
-                chip.setChipBackgroundColorResource(R.color.very_good);
-                chip.setTextColor(getResources().getColor(android.R.color.white));
-                chip.setClickable(false);
-                emotionsChipGroup.addView(chip);
-            }
-        } else {
-            emotionsContainer.setVisibility(View.GONE);
-        }
-
-        // Set sleep tags
-        List<String> sleepTags = entry.getSleepTags();
-        if (sleepTags != null && !sleepTags.isEmpty()) {
-            sleepContainer.setVisibility(View.VISIBLE);
-            sleepChipGroup.removeAllViews();
-            for (String sleep : sleepTags) {
-                Chip chip = new Chip(this);
-                chip.setText(sleep);
-                chip.setChipBackgroundColorResource(R.color.normal);
-                chip.setTextColor(getResources().getColor(android.R.color.white));
-                chip.setClickable(false);
-                sleepChipGroup.addView(chip);
-            }
-        } else {
-            sleepContainer.setVisibility(View.GONE);
-        }
-
-        // Set note
         String note = entry.getNote();
-        if (note != null && !note.isEmpty()) {
-            noteContainer.setVisibility(View.VISIBLE);
-            noteText.setText(note);
-        } else {
-            noteContainer.setVisibility(View.GONE);
-        }
+        noteContainer.setVisibility(note != null && !note.isEmpty() ? View.VISIBLE : View.GONE);
+        if (note != null) noteText.setText(note);
 
-        // Set photo
         String photoPath = entry.getPhotoPath();
-        if (photoPath != null && new File(photoPath).exists()) {
-            photoContainer.setVisibility(View.VISIBLE);
-            photoPreview.setImageURI(Uri.fromFile(new File(photoPath)));
-            photoPreview.setOnClickListener(v -> viewFullPhoto(photoPath));
-        } else {
-            photoContainer.setVisibility(View.GONE);
-        }
+        boolean hasPhoto = photoPath != null && new File(photoPath).exists();
+        photoContainer.setVisibility(hasPhoto ? View.VISIBLE : View.GONE);
+        if (hasPhoto) { photoPreview.setImageURI(Uri.fromFile(new File(photoPath))); photoPreview.setOnClickListener(v -> viewFullPhoto(photoPath)); }
 
-        // Set voice memo
         String voicePath = entry.getVoiceMemoPath();
-        if (voicePath != null && new File(voicePath).exists()) {
-            voiceContainer.setVisibility(View.VISIBLE);
-            playVoiceButton.setOnClickListener(v -> toggleVoicePlayback(voicePath));
-        } else {
-            voiceContainer.setVisibility(View.GONE);
-        }
+        boolean hasVoice = voicePath != null && new File(voicePath).exists();
+        voiceContainer.setVisibility(hasVoice ? View.VISIBLE : View.GONE);
+        if (hasVoice) playVoiceButton.setOnClickListener(v -> toggleVoicePlayback(voicePath));
     }
 
-    private String getMoodLabel(int moodLevel) {
-        switch (moodLevel) {
-            case 5: return "Feeling Rad!";
-            case 4: return "Feeling Good";
-            case 3: return "Feeling Meh";
-            case 2: return "Feeling Bad";
-            case 1: return "Feeling Awful";
-            default: return "Mood";
-        }
+    private void setupChips(List<String> items, LinearLayout container, ChipGroup group, int colorRes) {
+        if (items != null && !items.isEmpty()) {
+            container.setVisibility(View.VISIBLE);
+            group.removeAllViews();
+            for (String item : items) {
+                Chip chip = new Chip(this);
+                chip.setText(item);
+                chip.setChipBackgroundColorResource(colorRes);
+                chip.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+                chip.setClickable(false);
+                group.addView(chip);
+            }
+        } else container.setVisibility(View.GONE);
     }
 
-    private int getMoodColor(int moodLevel) {
-        switch (moodLevel) {
-            case 5: return getResources().getColor(R.color.very_good);
-            case 4: return getResources().getColor(R.color.good);
-            case 3: return getResources().getColor(R.color.normal);
-            case 2: return getResources().getColor(R.color.bad);
-            case 1: return getResources().getColor(R.color.very_bad);
-            default: return getResources().getColor(android.R.color.white);
-        }
-    }
-
-    private void viewFullPhoto(String photoPath) {
+    private void viewFullPhoto(String path) {
         try {
-            Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", new File(photoPath));
-            android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "image/*");
-            intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", new File(path));
+            Intent intent = new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "image/*").addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(intent);
-        } catch (Exception e) {
-            Toast.makeText(this, "Cannot open photo", Toast.LENGTH_SHORT).show();
-        }
+        } catch (Exception e) { Toast.makeText(this, "Cannot open photo", Toast.LENGTH_SHORT).show(); }
     }
 
-    private void toggleVoicePlayback(String voicePath) {
-        if (isPlaying && mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-            isPlaying = false;
-            playVoiceButton.setText("▶ Play Voice Memo");
-            playVoiceButton.setIconResource(R.drawable.ic_mic);
-            return;
-        }
-
+    private void toggleVoicePlayback(String path) {
+        if (isPlaying && mediaPlayer != null) { mediaPlayer.stop(); mediaPlayer.release(); mediaPlayer = null; isPlaying = false; playVoiceButton.setText("▶ Play Voice Memo"); return; }
         try {
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(voicePath);
+            mediaPlayer.setDataSource(path);
             mediaPlayer.prepare();
             mediaPlayer.start();
             isPlaying = true;
             playVoiceButton.setText("⏹ Stop Playing");
-
-            mediaPlayer.setOnCompletionListener(mp -> {
-                isPlaying = false;
-                playVoiceButton.setText("▶ Play Voice Memo");
-                playVoiceButton.setIconResource(R.drawable.ic_mic);
-                mp.release();
-                mediaPlayer = null;
-            });
-        } catch (Exception e) {
-            Toast.makeText(this, "Cannot play voice memo", Toast.LENGTH_SHORT).show();
-        }
+            mediaPlayer.setOnCompletionListener(mp -> { isPlaying = false; playVoiceButton.setText("▶ Play Voice Memo"); mp.release(); mediaPlayer = null; });
+        } catch (Exception e) { Toast.makeText(this, "Cannot play voice memo", Toast.LENGTH_SHORT).show(); }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
-    }
+    @Override protected void onDestroy() { super.onDestroy(); if (mediaPlayer != null) { mediaPlayer.release(); mediaPlayer = null; } }
 }

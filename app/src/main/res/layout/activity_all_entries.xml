@@ -3,21 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/background_primary"
     android:fitsSystemWindows="true">
 
     <!-- Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#1E1E1E"
+        android:background="@color/background_primary"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#1E1E1E">
+            android:background="@color/background_primary">
 
             <ImageView
                 android:id="@+id/btn_back"
@@ -26,7 +26,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
                 android:src="@drawable/ic_back"
-                app:tint="@android:color/white" />
+                app:tint="@color/text_primary" />
 
             <TextView
                 android:id="@+id/title_text"
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="All Entries"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -75,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="📷 Has Photo"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     app:chipBackgroundColor="@color/chip_filter_state"
                     app:checkedIconTint="@android:color/white" />
 
@@ -85,7 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="🎤 Has Voice"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     app:chipBackgroundColor="@color/chip_filter_state"
                     app:checkedIconTint="@android:color/white" />
 
@@ -95,7 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="😢 Very Bad"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     app:chipBackgroundColor="@color/chip_filter_state"
                     app:checkedIconTint="@android:color/white" />
 
@@ -105,7 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="😕 Bad"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     app:chipBackgroundColor="@color/chip_filter_state"
                     app:checkedIconTint="@android:color/white" />
 
@@ -115,7 +115,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="😐 Normal"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     app:chipBackgroundColor="@color/chip_filter_state"
                     app:checkedIconTint="@android:color/white" />
 
@@ -125,7 +125,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="🙂 Good"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     app:chipBackgroundColor="@color/chip_filter_state"
                     app:checkedIconTint="@android:color/white" />
 
@@ -135,7 +135,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="😄 Very Good"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     app:chipBackgroundColor="@color/chip_filter_state"
                     app:checkedIconTint="@android:color/white" />
 
@@ -157,7 +157,7 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
-            android:textColor="#AAAAAA"
+            android:textColor="@color/text_secondary_theme"
             android:textSize="12sp"
             android:visibility="gone" />
 
@@ -172,7 +172,7 @@
                 android:layout_gravity="center"
                 android:text="No entries yet.\nStart tracking your mood!"
                 android:textAlignment="center"
-                android:textColor="#888888"
+                android:textColor="@color/text_hint"
                 android:textSize="16sp"
                 android:visibility="gone" />
 

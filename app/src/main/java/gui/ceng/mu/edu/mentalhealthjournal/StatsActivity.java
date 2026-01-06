@@ -1,14 +1,12 @@
 package gui.ceng.mu.edu.mentalhealthjournal;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -27,10 +25,11 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import gui.ceng.mu.edu.mentalhealthjournal.data.entity.JournalEntryEntity;
 import gui.ceng.mu.edu.mentalhealthjournal.data.repository.JournalRepository;
+import gui.ceng.mu.edu.mentalhealthjournal.util.DateUtils;
+import gui.ceng.mu.edu.mentalhealthjournal.util.MoodUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ import java.util.Map;
  * Activity displaying comprehensive statistics with charts.
  * Shows weekly, monthly, and yearly statistics for mood trends and media attachments.
  */
-public class StatsActivity extends AppCompatActivity {
+public class StatsActivity extends BaseNavigationActivity {
 
     private static final int PERIOD_WEEKLY = 0;
     private static final int PERIOD_MONTHLY = 1;
@@ -82,7 +81,7 @@ public class StatsActivity extends AppCompatActivity {
         }
 
         initViews();
-        setupBottomNavigation();
+        setupBottomNavigation(R.id.navigation_stats);
         setupTabListeners();
         
         // Update tab selection based on period
@@ -93,26 +92,28 @@ public class StatsActivity extends AppCompatActivity {
 
     private void updateTabSelection() {
         // Reset all tabs
+        int hintColor = androidx.core.content.ContextCompat.getColor(this, R.color.text_hint);
+        int primaryColor = androidx.core.content.ContextCompat.getColor(this, R.color.text_primary);
         tabWeekly.setBackgroundResource(R.drawable.tab_unselected_background);
         tabMonthly.setBackgroundResource(R.drawable.tab_unselected_background);
         tabYearly.setBackgroundResource(R.drawable.tab_unselected_background);
-        tabWeekly.setTextColor(0xFF888888);
-        tabMonthly.setTextColor(0xFF888888);
-        tabYearly.setTextColor(0xFF888888);
+        tabWeekly.setTextColor(hintColor);
+        tabMonthly.setTextColor(hintColor);
+        tabYearly.setTextColor(hintColor);
         
         // Select current tab
         switch (currentPeriod) {
             case PERIOD_WEEKLY:
                 tabWeekly.setBackgroundResource(R.drawable.tab_selected_background);
-                tabWeekly.setTextColor(0xFFFFFFFF);
+                tabWeekly.setTextColor(primaryColor);
                 break;
             case PERIOD_MONTHLY:
                 tabMonthly.setBackgroundResource(R.drawable.tab_selected_background);
-                tabMonthly.setTextColor(0xFFFFFFFF);
+                tabMonthly.setTextColor(primaryColor);
                 break;
             case PERIOD_YEARLY:
                 tabYearly.setBackgroundResource(R.drawable.tab_selected_background);
-                tabYearly.setTextColor(0xFFFFFFFF);
+                tabYearly.setTextColor(primaryColor);
                 break;
         }
     }
@@ -150,14 +151,18 @@ public class StatsActivity extends AppCompatActivity {
 
         XAxis xAxisLine = moodLineChart.getXAxis();
         xAxisLine.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxisLine.setTextColor(Color.WHITE);
+        xAxisLine.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.text_primary));
         xAxisLine.setDrawGridLines(false);
         xAxisLine.setGranularity(1f);
 
+        int textColor = androidx.core.content.ContextCompat.getColor(this, R.color.text_primary);
+        int gridColor = androidx.core.content.ContextCompat.getColor(this, R.color.divider_color);
+        int cardColor = androidx.core.content.ContextCompat.getColor(this, R.color.background_card);
+        
         YAxis yAxisLine = moodLineChart.getAxisLeft();
-        yAxisLine.setTextColor(Color.WHITE);
+        yAxisLine.setTextColor(textColor);
         yAxisLine.setDrawGridLines(true);
-        yAxisLine.setGridColor(Color.parseColor("#3A3A3A"));
+        yAxisLine.setGridColor(gridColor);
         yAxisLine.setAxisMinimum(1f);
         yAxisLine.setAxisMaximum(5f);
         yAxisLine.setGranularity(1f);
@@ -166,7 +171,7 @@ public class StatsActivity extends AppCompatActivity {
         moodPieChart.getDescription().setEnabled(false);
         moodPieChart.setUsePercentValues(true);
         moodPieChart.setDrawHoleEnabled(true);
-        moodPieChart.setHoleColor(Color.parseColor("#2C2C2C"));
+        moodPieChart.setHoleColor(cardColor);
         moodPieChart.setHoleRadius(45f);
         moodPieChart.setTransparentCircleRadius(50f);
         moodPieChart.setDrawEntryLabels(false);
@@ -178,7 +183,7 @@ public class StatsActivity extends AppCompatActivity {
         legendPie.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         legendPie.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         legendPie.setDrawInside(false);
-        legendPie.setTextColor(Color.WHITE);
+        legendPie.setTextColor(androidx.core.content.ContextCompat.getColor(this, R.color.text_primary));
         legendPie.setTextSize(10f);
 
         // Media Bar Chart setup
@@ -199,16 +204,19 @@ public class StatsActivity extends AppCompatActivity {
         barChart.getAxisRight().setEnabled(false);
         barChart.setExtraBottomOffset(10f);
 
+        int barTextColor = androidx.core.content.ContextCompat.getColor(this, R.color.text_primary);
+        int barGridColor = androidx.core.content.ContextCompat.getColor(this, R.color.divider_color);
+        
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTextColor(Color.WHITE);
+        xAxis.setTextColor(barTextColor);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
 
         YAxis yAxis = barChart.getAxisLeft();
-        yAxis.setTextColor(Color.WHITE);
+        yAxis.setTextColor(barTextColor);
         yAxis.setDrawGridLines(true);
-        yAxis.setGridColor(Color.parseColor("#3A3A3A"));
+        yAxis.setGridColor(barGridColor);
         yAxis.setAxisMinimum(0f);
         yAxis.setGranularity(1f);
     }
@@ -227,12 +235,14 @@ public class StatsActivity extends AppCompatActivity {
 
     private void updateTabUI() {
         // Reset all tabs
+        int hintColor = androidx.core.content.ContextCompat.getColor(this, R.color.text_hint);
+        int primaryColor = androidx.core.content.ContextCompat.getColor(this, R.color.text_primary);
         tabWeekly.setBackgroundResource(0);
         tabMonthly.setBackgroundResource(0);
         tabYearly.setBackgroundResource(0);
-        tabWeekly.setTextColor(Color.parseColor("#888888"));
-        tabMonthly.setTextColor(Color.parseColor("#888888"));
-        tabYearly.setTextColor(Color.parseColor("#888888"));
+        tabWeekly.setTextColor(hintColor);
+        tabMonthly.setTextColor(hintColor);
+        tabYearly.setTextColor(hintColor);
 
         // Highlight selected tab
         TextView selectedTab;
@@ -248,38 +258,11 @@ public class StatsActivity extends AppCompatActivity {
                 break;
         }
         selectedTab.setBackgroundResource(R.drawable.tab_selected_background);
-        selectedTab.setTextColor(Color.WHITE);
+        selectedTab.setTextColor(primaryColor);
     }
 
     private long[] getDateRange() {
-        Calendar calendar = Calendar.getInstance();
-        // Set end time to end of today
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 999);
-        long endTime = calendar.getTimeInMillis();
-
-        // Calculate start time based on period
-        switch (currentPeriod) {
-            case PERIOD_MONTHLY:
-                calendar.add(Calendar.MONTH, -1);
-                break;
-            case PERIOD_YEARLY:
-                calendar.add(Calendar.YEAR, -1);
-                break;
-            default: // WEEKLY
-                calendar.add(Calendar.DAY_OF_YEAR, -6); // -6 to include today = 7 days total
-                break;
-        }
-        // Set start time to beginning of that day
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        long startTime = calendar.getTimeInMillis();
-
-        return new long[]{startTime, endTime};
+        return DateUtils.getDateRangeForPeriod(currentPeriod);
     }
 
     private void loadStatistics() {
@@ -438,17 +421,19 @@ public class StatsActivity extends AppCompatActivity {
             }
         }
 
+        int accentColor = ContextCompat.getColor(this, R.color.accent_color);
+        int textColor = ContextCompat.getColor(this, R.color.text_primary);
         LineDataSet dataSet = new LineDataSet(lineEntries, "Mood");
-        dataSet.setColor(Color.parseColor("#4CAF50"));
-        dataSet.setCircleColor(Color.parseColor("#4CAF50"));
+        dataSet.setColor(accentColor);
+        dataSet.setCircleColor(accentColor);
         dataSet.setLineWidth(2f);
         dataSet.setCircleRadius(4f);
         dataSet.setDrawCircleHole(false);
-        dataSet.setValueTextColor(Color.WHITE);
+        dataSet.setValueTextColor(textColor);
         dataSet.setValueTextSize(10f);
         dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         dataSet.setDrawFilled(true);
-        dataSet.setFillColor(Color.parseColor("#4CAF50"));
+        dataSet.setFillColor(accentColor);
         dataSet.setFillAlpha(50);
 
         LineData lineData = new LineData(dataSet);
@@ -670,8 +655,8 @@ public class StatsActivity extends AppCompatActivity {
         }
 
         BarDataSet dataSet = new BarDataSet(barEntries, "Entries");
-        dataSet.setColor(Color.parseColor("#4CAF50"));
-        dataSet.setValueTextColor(Color.WHITE);
+        dataSet.setColor(ContextCompat.getColor(this, R.color.accent_color));
+        dataSet.setValueTextColor(ContextCompat.getColor(this, R.color.text_primary));
         dataSet.setValueTextSize(10f);
 
         BarData barData = new BarData(dataSet);
@@ -689,44 +674,14 @@ public class StatsActivity extends AppCompatActivity {
         entriesBarChart.invalidate();
     }
 
-    private void setupBottomNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_stats);
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.navigation_home) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-                return true;
-            } else if (id == R.id.navigation_calendar) {
-                Intent intent = new Intent(getApplicationContext(), CalendarActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-                return true;
-            } else if (id == R.id.navigation_stats) {
-                return true;
-            } else if (id == R.id.navigation_more) {
-                Intent intent = new Intent(getApplicationContext(), MoreActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
-                overridePendingTransition(0, 0);
-                return true;
-            }
-            return false;
-        });
+    @Override
+    protected int getCurrentNavigationItem() {
+        return R.id.navigation_stats;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh the bottom navigation selection
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_stats);
-        // Reload statistics
         loadStatistics();
     }
 }

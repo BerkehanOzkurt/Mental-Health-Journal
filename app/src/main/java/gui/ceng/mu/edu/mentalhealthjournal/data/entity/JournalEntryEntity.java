@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import gui.ceng.mu.edu.mentalhealthjournal.data.converter.StringListConverter;
+import gui.ceng.mu.edu.mentalhealthjournal.util.MoodUtils;
 
 import java.util.List;
 
@@ -129,37 +130,13 @@ public class JournalEntryEntity {
      * Helper method to get mood icon resource based on mood level
      */
     public int getMoodIconResource() {
-        switch (moodLevel) {
-            case 5:
-                return gui.ceng.mu.edu.mentalhealthjournal.R.drawable.face1;
-            case 4:
-                return gui.ceng.mu.edu.mentalhealthjournal.R.drawable.face2;
-            case 3:
-                return gui.ceng.mu.edu.mentalhealthjournal.R.drawable.face3;
-            case 2:
-                return gui.ceng.mu.edu.mentalhealthjournal.R.drawable.face4;
-            case 1:
-            default:
-                return gui.ceng.mu.edu.mentalhealthjournal.R.drawable.face5;
-        }
+        return MoodUtils.getIcon(moodLevel);
     }
 
     /**
      * Helper method to get mood background resource based on mood level
      */
     public int getMoodBackgroundResource() {
-        switch (moodLevel) {
-            case 5:
-                return gui.ceng.mu.edu.mentalhealthjournal.R.drawable.emoji_background_very_good;
-            case 4:
-                return gui.ceng.mu.edu.mentalhealthjournal.R.drawable.emoji_background_good;
-            case 3:
-                return gui.ceng.mu.edu.mentalhealthjournal.R.drawable.emoji_background_normal;
-            case 2:
-                return gui.ceng.mu.edu.mentalhealthjournal.R.drawable.emoji_background_bad;
-            case 1:
-            default:
-                return gui.ceng.mu.edu.mentalhealthjournal.R.drawable.emoji_background_very_bad;
-        }
+        return MoodUtils.getBackground(moodLevel);
     }
 }

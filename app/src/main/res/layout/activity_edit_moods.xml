@@ -4,23 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/background_primary"
     android:fitsSystemWindows="true"
     tools:context=".EditMoodsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#1E1E1E">
+        android:background="@color/background_primary">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/ic_back"
-            app:navigationIconTint="@android:color/white"
+            app:navigationIconTint="@color/text_primary"
             app:title="Edit Moods"
-            app:titleTextColor="@android:color/white" />
+            app:titleTextColor="@color/text_primary" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -43,7 +43,7 @@
             android:layout_gravity="center"
             android:text="No custom moods yet.\nTap + to add one."
             android:textAlignment="center"
-            android:textColor="#888888"
+            android:textColor="@color/text_hint"
             android:textSize="16sp"
             android:visibility="gone" />
 
@@ -57,7 +57,7 @@
         android:layout_margin="16dp"
         android:contentDescription="Add Mood"
         android:src="@drawable/ic_add"
-        app:backgroundTint="#4CAF50"
-        app:tint="@android:color/white" />
+        app:backgroundTint="@color/accent_color"
+        app:tint="@color/text_primary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

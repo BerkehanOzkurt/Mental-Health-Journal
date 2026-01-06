@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme (Dark) -->
+    <!-- Base application theme using DayNight -->
     <style name="Base.Theme.MentalHealthJournal" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary colors -->
-        <item name="colorPrimary">#4CAF50</item>
+        <item name="colorPrimary">@color/very_good</item>
         <item name="colorPrimaryVariant">#388E3C</item>
         <item name="colorOnPrimary">@android:color/white</item>
         
@@ -11,22 +11,22 @@
         <item name="colorSecondaryVariant">#66BB6A</item>
         <item name="colorOnSecondary">@android:color/black</item>
         
-        <!-- Background colors -->
-        <item name="android:colorBackground">#1E1E1E</item>
-        <item name="colorSurface">#2C2C2C</item>
-        <item name="colorOnSurface">@android:color/white</item>
+        <!-- Background colors - use theme-aware colors -->
+        <item name="android:colorBackground">@color/background_primary</item>
+        <item name="colorSurface">@color/background_card</item>
+        <item name="colorOnSurface">@color/text_primary</item>
         
         <!-- Status bar -->
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">#1E1E1E</item>
+        <item name="android:navigationBarColor">@color/nav_bar_color</item>
     </style>
 
     <style name="Theme.MentalHealthJournal" parent="Base.Theme.MentalHealthJournal" />
     
-    <!-- Light Theme -->
+    <!-- Light Theme (kept for explicit use) -->
     <style name="Theme.MentalHealthJournal.Light" parent="Theme.Material3.Light.NoActionBar">
         <!-- Primary colors -->
-        <item name="colorPrimary">#4CAF50</item>
+        <item name="colorPrimary">@color/very_good</item>
         <item name="colorPrimaryVariant">#388E3C</item>
         <item name="colorOnPrimary">@android:color/white</item>
         
@@ -54,7 +54,7 @@
     </style>
 
     <style name="PopupMenuTextStyle" parent="TextAppearance.Material3.BodyMedium">
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">14sp</item>
     </style>
 </resources>

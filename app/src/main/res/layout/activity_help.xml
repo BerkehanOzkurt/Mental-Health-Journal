@@ -4,23 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/background_primary"
     android:fitsSystemWindows="true"
     tools:context=".HelpActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#1E1E1E">
+        android:background="@color/background_primary">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/ic_back"
-            app:navigationIconTint="@android:color/white"
+            app:navigationIconTint="@color/text_primary"
             app:title="Help &amp; FAQ"
-            app:titleTextColor="@android:color/white" />
+            app:titleTextColor="@color/text_primary" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Frequently Asked Questions"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Find answers to common questions about using the app."
-                android:textColor="#888888"
+                android:textColor="@color/text_hint"
                 android:textSize="14sp" />
 
         </LinearLayout>

@@ -34,6 +34,7 @@ import gui.ceng.mu.edu.mentalhealthjournal.data.entity.JournalEntryEntity;
 import gui.ceng.mu.edu.mentalhealthjournal.data.repository.JournalRepository;
 import gui.ceng.mu.edu.mentalhealthjournal.fragment.EmotionsFragment;
 import gui.ceng.mu.edu.mentalhealthjournal.fragment.SleepFragment;
+import gui.ceng.mu.edu.mentalhealthjournal.util.MoodUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -566,33 +567,8 @@ public class AddEntryActivity extends AppCompatActivity {
     }
 
     private void updateMoodIcon() {
-        int iconRes;
-        int bgRes;
-        switch (moodLevel) {
-            case 5:
-                iconRes = R.drawable.face1;
-                bgRes = R.drawable.emoji_background_very_good;
-                break;
-            case 4:
-                iconRes = R.drawable.face2;
-                bgRes = R.drawable.emoji_background_good;
-                break;
-            case 3:
-                iconRes = R.drawable.face3;
-                bgRes = R.drawable.emoji_background_normal;
-                break;
-            case 2:
-                iconRes = R.drawable.face4;
-                bgRes = R.drawable.emoji_background_bad;
-                break;
-            case 1:
-            default:
-                iconRes = R.drawable.face5;
-                bgRes = R.drawable.emoji_background_very_bad;
-                break;
-        }
-        selectedMoodIcon.setImageResource(iconRes);
-        selectedMoodIcon.setBackgroundResource(bgRes);
+        selectedMoodIcon.setImageResource(MoodUtils.getIcon(moodLevel));
+        selectedMoodIcon.setBackgroundResource(MoodUtils.getBackground(moodLevel));
     }
 
     /**

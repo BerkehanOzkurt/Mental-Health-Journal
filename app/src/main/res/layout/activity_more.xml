@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/background_primary"
     android:fitsSystemWindows="true"
     tools:context=".MoreActivity">
 
@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:text="More"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:text="Hi, User"
-                    android:textColor="#4CAF50"
+                    android:textColor="@color/accent_color"
                     android:textSize="16sp" />
 
             </RelativeLayout>
@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#2C2C2C"
+                app:cardBackgroundColor="@color/background_card"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp">
 
@@ -80,7 +80,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Journal Summary"
-                            android:textColor="#4CAF50"
+                            android:textColor="@color/accent_color"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -90,7 +90,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:text="Track your mental health journey"
-                            android:textColor="#888888"
+                            android:textColor="@color/text_hint"
                             android:textSize="13sp" />
 
                     </LinearLayout>
@@ -99,7 +99,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_expand_more"
-                        app:tint="#4CAF50" />
+                        app:tint="@color/accent_color" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -111,7 +111,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Reports"
-                android:textColor="#888888"
+                android:textColor="@color/text_hint"
                 android:textSize="14sp" />
 
             <!-- Weekly Reports -->
@@ -142,7 +142,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:text="Weekly Reports"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
                 <TextView
@@ -150,7 +150,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:textColor="#888888"
+                    android:textColor="@color/text_hint"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -183,7 +183,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:text="Monthly Reports"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
                 <TextView
@@ -191,7 +191,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:textColor="#888888"
+                    android:textColor="@color/text_hint"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -224,7 +224,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:text="Yearly Report 2026"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
                 <TextView
@@ -232,7 +232,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:textColor="#888888"
+                    android:textColor="@color/text_hint"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -242,7 +242,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="8dp"
-                android:background="#3A3A3A" />
+                android:background="@color/background_input" />
 
             <!-- Media & Memories Section -->
             <TextView
@@ -251,7 +251,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Media &amp; Memories"
-                android:textColor="#888888"
+                android:textColor="@color/text_hint"
                 android:textSize="14sp" />
 
             <!-- Photo Gallery -->
@@ -282,7 +282,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:text="Photo Gallery"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
                 <TextView
@@ -290,7 +290,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0 photos"
-                    android:textColor="#888888"
+                    android:textColor="@color/text_hint"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -324,7 +324,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:text="Voice Memos"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
                 <TextView
@@ -332,7 +332,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0 memos"
-                    android:textColor="#888888"
+                    android:textColor="@color/text_hint"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -342,7 +342,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="8dp"
-                android:background="#3A3A3A" />
+                android:background="@color/background_input" />
 
             <!-- App Settings Section -->
             <TextView
@@ -351,7 +351,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Settings"
-                android:textColor="#888888"
+                android:textColor="@color/text_hint"
                 android:textSize="14sp" />
 
             <!-- Settings (moved to top of section) -->
@@ -382,7 +382,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:text="Settings"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -415,7 +415,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:text="Backup &amp; Restore"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -425,7 +425,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="8dp"
-                android:background="#3A3A3A" />
+                android:background="@color/background_input" />
 
             <!-- Support Section -->
             <TextView
@@ -434,7 +434,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Support"
-                android:textColor="#888888"
+                android:textColor="@color/text_hint"
                 android:textSize="14sp" />
 
             <!-- Help -->
@@ -465,7 +465,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:text="Help &amp; FAQ"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -498,7 +498,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:text="Send Feedback"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -531,14 +531,14 @@
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
                     android:text="About"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="v1.0"
-                    android:textColor="#888888"
+                    android:textColor="@color/text_hint"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -556,9 +556,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#2C2C2C"
-        app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"
+        android:background="@color/background_card"
+        app:itemIconTint="@color/text_primary"
+        app:itemTextColor="@color/text_primary"
         app:menu="@menu/bottom_navigation_menu" />
 
 </RelativeLayout>

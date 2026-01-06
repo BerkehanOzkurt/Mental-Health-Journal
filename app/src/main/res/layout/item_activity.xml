@@ -23,6 +23,6 @@
         android:gravity="center"
         android:maxWidth="70dp"
         android:text="happy"
-        android:textColor="@android:color/white"
+        android:textColor="@color/text_primary"
         android:textSize="12sp" />
 </LinearLayout>

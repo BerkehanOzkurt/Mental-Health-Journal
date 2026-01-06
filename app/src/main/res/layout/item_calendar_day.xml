@@ -54,7 +54,7 @@
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="2dp"
             android:background="@drawable/circle_background"
-            android:backgroundTint="#4CAF50"
+            app:backgroundTint="@color/accent_color"
             android:visibility="gone" />
 
     </FrameLayout>

@@ -12,11 +12,14 @@ import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import gui.ceng.mu.edu.mentalhealthjournal.util.ImageUtils;
+
 import java.io.File;
 import java.util.List;
 
 /**
  * Adapter for displaying photos in a grid layout.
+ * Uses Glide via ImageUtils for efficient image loading.
  */
 public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.PhotoViewHolder> {
 
@@ -38,11 +41,8 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     @Override
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         String path = photoPaths.get(position);
-        File file = new File(path);
-        if (file.exists()) {
-            holder.imageView.setImageURI(Uri.fromFile(file));
-            holder.imageView.setOnClickListener(v -> openFullImage(path));
-        }
+        ImageUtils.loadGridThumbnail(context, path, holder.imageView);
+        holder.imageView.setOnClickListener(v -> openFullImage(path));
     }
 
     @Override

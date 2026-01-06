@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/background_primary"
     android:fitsSystemWindows="true"
     tools:context=".MoodSelectionActivity">
 
@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="16dp"
-        android:background="#1E1E1E">
+        android:background="@color/background_primary">
 
         <!-- Back Button -->
         <com.google.android.material.button.MaterialButton
@@ -30,7 +30,7 @@
             android:insetBottom="0dp"
             app:icon="@drawable/ic_back"
             app:iconGravity="textStart"
-            app:iconTint="@android:color/white"
+            app:iconTint="@color/text_primary"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             app:strokeColor="#555555"
             app:strokeWidth="2dp"
@@ -50,7 +50,7 @@
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
             android:text="Continue"
-            android:textColor="@android:color/white"
+            android:textColor="@color/text_primary"
             android:textSize="14sp"
             android:enabled="false"
             android:alpha="0.5"
@@ -58,7 +58,7 @@
             app:backgroundTint="@color/very_good"
             app:icon="@drawable/ic_check"
             app:iconGravity="textStart"
-            app:iconTint="@android:color/white" />
+            app:iconTint="@color/text_primary" />
 
     </LinearLayout>
 
@@ -81,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="How are you?"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_primary"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 android:layout_marginTop="24dp" />

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/background_primary"
     android:fitsSystemWindows="true"
     tools:context=".SettingsActivity">
 
@@ -13,7 +13,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="#1E1E1E"
+        android:background="@color/background_primary"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingHorizontal="16dp">
@@ -25,7 +25,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="4dp"
             android:src="@drawable/ic_back"
-            app:tint="@android:color/white" />
+            app:tint="@color/text_primary" />
 
         <TextView
             android:layout_width="0dp"
@@ -33,7 +33,7 @@
             android:layout_marginStart="16dp"
             android:layout_weight="1"
             android:text="Settings"
-            android:textColor="@android:color/white"
+            android:textColor="@color/text_primary"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:text="Appearance"
-                android:textColor="#4CAF50"
+                android:textColor="@color/accent_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -81,7 +81,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Theme"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="16sp" />
 
                     <TextView
@@ -90,7 +90,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="Dark"
-                        android:textColor="#888888"
+                        android:textColor="@color/text_hint"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -117,7 +117,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Start of Week"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="16sp" />
 
                     <TextView
@@ -126,7 +126,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="Monday"
-                        android:textColor="#888888"
+                        android:textColor="@color/text_hint"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -138,7 +138,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="16dp"
-                android:background="#3A3A3A" />
+                android:background="@color/background_input" />
 
             <!-- Notifications Section -->
             <TextView
@@ -146,7 +146,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:text="Notifications"
-                android:textColor="#4CAF50"
+                android:textColor="@color/accent_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -168,7 +168,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Daily Reminder"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="16sp" />
 
                     <TextView
@@ -176,7 +176,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="Get reminded to log your mood"
-                        android:textColor="#888888"
+                        android:textColor="@color/text_hint"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -186,7 +186,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    app:thumbTint="#4CAF50"
+                    app:thumbTint="@color/accent_color"
                     app:trackTint="#3A3A3A" />
 
             </LinearLayout>
@@ -211,7 +211,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Reminder Time"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="16sp" />
 
                     <TextView
@@ -220,7 +220,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="20:00"
-                        android:textColor="#888888"
+                        android:textColor="@color/text_hint"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -232,7 +232,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="16dp"
-                android:background="#3A3A3A" />
+                android:background="@color/background_input" />
 
             <!-- Privacy Section -->
             <TextView
@@ -240,7 +240,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:text="Privacy &amp; Security"
-                android:textColor="#4CAF50"
+                android:textColor="@color/accent_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -262,7 +262,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="PIN Lock"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="16sp" />
 
                     <TextView
@@ -270,7 +270,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="Protect your journal with a PIN"
-                        android:textColor="#888888"
+                        android:textColor="@color/text_hint"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -280,7 +280,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="false"
-                    app:thumbTint="#4CAF50"
+                    app:thumbTint="@color/accent_color"
                     app:trackTint="#3A3A3A" />
 
             </LinearLayout>
@@ -300,7 +300,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Change PIN"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
 
             </LinearLayout>
@@ -310,7 +310,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="16dp"
-                android:background="#3A3A3A" />
+                android:background="@color/background_input" />
 
             <!-- Data Section -->
             <TextView
@@ -318,7 +318,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:text="Data Management"
-                android:textColor="#4CAF50"
+                android:textColor="@color/accent_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -342,7 +342,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Export Data"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="16sp" />
 
                     <TextView
@@ -350,7 +350,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="Export your journal entries"
-                        android:textColor="#888888"
+                        android:textColor="@color/text_hint"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -377,7 +377,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Import Data"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="16sp" />
 
                     <TextView
@@ -385,7 +385,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="Import journal entries from backup"
-                        android:textColor="#888888"
+                        android:textColor="@color/text_hint"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -420,7 +420,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="Delete all journal entries permanently"
-                        android:textColor="#888888"
+                        android:textColor="@color/text_hint"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -432,7 +432,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginVertical="16dp"
-                android:background="#3A3A3A" />
+                android:background="@color/background_input" />
 
             <!-- Account Section -->
             <TextView
@@ -440,7 +440,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:text="Account"
-                android:textColor="#4CAF50"
+                android:textColor="@color/accent_color"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -464,7 +464,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Your Name"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="16sp" />
 
                     <TextView
@@ -473,7 +473,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="User"
-                        android:textColor="#888888"
+                        android:textColor="@color/text_hint"
                         android:textSize="13sp" />
 
                 </LinearLayout>

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/background_primary"
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Good Evening,"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_primary"
                 android:textSize="24sp" />
 
             <TextView
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="User 👋"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_primary"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                app:cardBackgroundColor="#2C2C2C"
+                app:cardBackgroundColor="@color/background_card"
                 app:cardCornerRadius="16dp">
 
                 <LinearLayout
@@ -59,7 +59,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="CURRENT STREAK"
-                        android:textColor="#4CAF50"
+                        android:textColor="@color/accent_color"
                         android:textSize="14sp" />
 
                     <LinearLayout
@@ -74,7 +74,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="0 days"
-                            android:textColor="@android:color/white"
+                            android:textColor="@color/text_primary"
                             android:textSize="34sp" />
 
                         <TextView
@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="How do you feel?"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_primary"
                 android:textSize="18sp" />
 
             <LinearLayout
@@ -122,7 +122,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Very Good"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -147,7 +147,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Good"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -172,7 +172,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Normal"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -197,7 +197,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Bad"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="12sp" />
                 </LinearLayout>
 
@@ -222,7 +222,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="Very Bad"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -237,7 +237,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Recent Entries"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="18sp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -245,9 +245,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:backgroundTint="#2C2C2C"
+                    android:backgroundTint="@color/button_background"
                     android:text="+ Add Entry"
-                    android:textColor="#4CAF50"
+                    android:textColor="@color/accent_color"
                     app:cornerRadius="8dp" />
             </RelativeLayout>
         </LinearLayout>
@@ -271,7 +271,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="8dp"
             android:text="View All"
-            android:textColor="#4CAF50" />
+            android:textColor="@color/accent_color" />
 
     </LinearLayout>
 
@@ -280,9 +280,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#2C2C2C"
-        app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"
+        android:background="@color/background_card"
+        app:itemIconTint="@color/text_primary"
+        app:itemTextColor="@color/text_primary"
         app:menu="@menu/bottom_navigation_menu" />
 
 </RelativeLayout>

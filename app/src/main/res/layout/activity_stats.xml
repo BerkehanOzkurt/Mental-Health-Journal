@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/background_primary"
     android:fitsSystemWindows="true"
     tools:context=".StatsActivity">
 
@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Statistics"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_primary"
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
@@ -47,7 +47,7 @@
                     android:gravity="center"
                     android:padding="12dp"
                     android:text="Weekly"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/text_primary"
                     android:textSize="14sp" />
 
                 <TextView
@@ -58,7 +58,7 @@
                     android:gravity="center"
                     android:padding="12dp"
                     android:text="Monthly"
-                    android:textColor="#888888"
+                    android:textColor="@color/text_hint"
                     android:textSize="14sp" />
 
                 <TextView
@@ -69,7 +69,7 @@
                     android:gravity="center"
                     android:padding="12dp"
                     android:text="Yearly"
-                    android:textColor="#888888"
+                    android:textColor="@color/text_hint"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -79,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                app:cardBackgroundColor="#2C2C2C"
+                app:cardBackgroundColor="@color/background_card"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp">
 
@@ -93,7 +93,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Overview"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -116,7 +116,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
-                                android:textColor="#4CAF50"
+                                android:textColor="@color/accent_color"
                                 android:textSize="28sp"
                                 android:textStyle="bold" />
 
@@ -124,7 +124,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Entries"
-                                android:textColor="#888888"
+                                android:textColor="@color/text_hint"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
@@ -149,7 +149,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Avg Mood"
-                                android:textColor="#888888"
+                                android:textColor="@color/text_hint"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
@@ -174,7 +174,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Day Streak"
-                                android:textColor="#888888"
+                                android:textColor="@color/text_hint"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
@@ -187,7 +187,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardBackgroundColor="#2C2C2C"
+                app:cardBackgroundColor="@color/background_card"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp">
 
@@ -201,7 +201,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Mood Trend"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -219,7 +219,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardBackgroundColor="#2C2C2C"
+                app:cardBackgroundColor="@color/background_card"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp">
 
@@ -233,7 +233,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Mood Distribution"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -251,7 +251,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:cardBackgroundColor="#2C2C2C"
+                app:cardBackgroundColor="@color/background_card"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp">
 
@@ -265,7 +265,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Media Attachments"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -297,7 +297,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:text="0"
-                                android:textColor="@android:color/white"
+                                android:textColor="@color/text_primary"
                                 android:textSize="24sp"
                                 android:textStyle="bold" />
 
@@ -305,7 +305,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Photos"
-                                android:textColor="#888888"
+                                android:textColor="@color/text_hint"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
@@ -335,7 +335,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
                                 android:text="0"
-                                android:textColor="@android:color/white"
+                                android:textColor="@color/text_primary"
                                 android:textSize="24sp"
                                 android:textStyle="bold" />
 
@@ -343,7 +343,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Voice Memos"
-                                android:textColor="#888888"
+                                android:textColor="@color/text_hint"
                                 android:textSize="12sp" />
                         </LinearLayout>
 
@@ -365,7 +365,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="#2C2C2C"
+                app:cardBackgroundColor="@color/background_card"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp">
 
@@ -379,7 +379,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Entries Activity"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -400,9 +400,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#2C2C2C"
-        app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"
+        android:background="@color/background_card"
+        app:itemIconTint="@color/text_primary"
+        app:itemTextColor="@color/text_primary"
         app:menu="@menu/bottom_navigation_menu" />
 
 </RelativeLayout>

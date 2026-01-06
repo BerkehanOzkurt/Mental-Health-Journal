@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
+    android:background="@color/background_primary"
     android:fitsSystemWindows="true"
     tools:context=".CalendarActivity">
 
@@ -31,7 +31,7 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back"
-                app:tint="#4CAF50"
+                app:tint="@color/accent_color"
                 android:contentDescription="Previous month" />
 
             <!-- Month and Year Display -->
@@ -42,7 +42,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="May 2025"
-                android:textColor="@android:color/white"
+                android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -54,7 +54,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back"
                 android:rotation="180"
-                app:tint="#4CAF50"
+                app:tint="@color/accent_color"
                 android:contentDescription="Next month" />
 
         </LinearLayout>
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            app:cardBackgroundColor="#2C2C2C"
+            app:cardBackgroundColor="@color/background_card"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp">
 
@@ -87,7 +87,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="Mon"
-                        android:textColor="#4CAF50"
+                        android:textColor="@color/accent_color"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -97,7 +97,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="Tue"
-                        android:textColor="#4CAF50"
+                        android:textColor="@color/accent_color"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -107,7 +107,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="Wed"
-                        android:textColor="#4CAF50"
+                        android:textColor="@color/accent_color"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -117,7 +117,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="Thu"
-                        android:textColor="#4CAF50"
+                        android:textColor="@color/accent_color"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -127,7 +127,7 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="Fri"
-                        android:textColor="#4CAF50"
+                        android:textColor="@color/accent_color"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -184,7 +184,7 @@
                     android:layout_width="12dp"
                     android:layout_height="12dp"
                     android:background="@drawable/circle_background"
-                    android:backgroundTint="#4CAF50" />
+                    app:backgroundTint="@color/accent_color" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -282,7 +282,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:visibility="gone"
-            app:cardBackgroundColor="#2C2C2C"
+            app:cardBackgroundColor="@color/background_card"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp">
 
@@ -311,7 +311,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="January 6, 2026"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -331,7 +331,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="View"
-                    android:textColor="#4CAF50"
+                    android:textColor="@color/accent_color"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:padding="8dp"
@@ -348,9 +348,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#2C2C2C"
-        app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"
+        android:background="@color/background_card"
+        app:itemIconTint="@color/text_primary"
+        app:itemTextColor="@color/text_primary"
         app:menu="@menu/bottom_navigation_menu" />
 
 </RelativeLayout>
