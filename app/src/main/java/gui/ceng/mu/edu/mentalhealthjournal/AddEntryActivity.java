@@ -149,7 +149,8 @@ public class AddEntryActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && currentPhotoUri != null) {
-                    photoPath = currentPhotoUri.getPath();
+                    // photoPath is already set correctly in createImageFile()
+                    // Don't overwrite with currentPhotoUri.getPath() which returns wrong path
                     showPhotoPreview(currentPhotoUri);
                 }
             }

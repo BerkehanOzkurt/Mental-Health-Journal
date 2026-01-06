@@ -111,10 +111,6 @@ public class MoreActivity extends AppCompatActivity {
         // Settings
         findViewById(R.id.menu_settings).setOnClickListener(v -> 
             startActivity(new Intent(this, SettingsActivity.class)));
-        findViewById(R.id.menu_edit_moods).setOnClickListener(v -> 
-            startActivity(new Intent(this, EditMoodsActivity.class)));
-        findViewById(R.id.menu_edit_activities).setOnClickListener(v -> 
-            startActivity(new Intent(this, EditActivitiesActivity.class)));
         findViewById(R.id.menu_backup).setOnClickListener(v -> 
             showBackupRestoreDialog());
 
