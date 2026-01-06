@@ -399,4 +399,123 @@ public class JournalRepository {
             }
         });
     }
+
+    // ========== Search and Filter Methods ==========
+
+    /**
+     * Search entries by keyword in note, emotions, and activities
+     * @param keyword The search keyword
+     * @param callback Callback to receive matching entries
+     */
+    public void searchEntriesByKeyword(String keyword, RepositoryCallback<List<JournalEntryEntity>> callback) {
+        executorService.execute(() -> {
+            try {
+                List<JournalEntryEntity> entries = journalEntryDao.searchEntriesByKeyword(keyword);
+                if (callback != null) {
+                    callback.onComplete(entries);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get entries with photos
+     * @param callback Callback to receive entries with photos
+     */
+    public void getEntriesWithPhotos(RepositoryCallback<List<JournalEntryEntity>> callback) {
+        executorService.execute(() -> {
+            try {
+                List<JournalEntryEntity> entries = journalEntryDao.getEntriesWithPhotos();
+                if (callback != null) {
+                    callback.onComplete(entries);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get entries with voice memos
+     * @param callback Callback to receive entries with voice memos
+     */
+    public void getEntriesWithVoiceMemos(RepositoryCallback<List<JournalEntryEntity>> callback) {
+        executorService.execute(() -> {
+            try {
+                List<JournalEntryEntity> entries = journalEntryDao.getEntriesWithVoiceMemos();
+                if (callback != null) {
+                    callback.onComplete(entries);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get entries by mood level
+     * @param moodLevel The mood level (1-5)
+     * @param callback Callback to receive entries
+     */
+    public void getEntriesByMoodLevel(int moodLevel, RepositoryCallback<List<JournalEntryEntity>> callback) {
+        executorService.execute(() -> {
+            try {
+                List<JournalEntryEntity> entries = journalEntryDao.getEntriesByMoodLevel(moodLevel);
+                if (callback != null) {
+                    callback.onComplete(entries);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get entries by multiple mood levels
+     * @param moodLevels List of mood levels to filter by
+     * @param callback Callback to receive entries
+     */
+    public void getEntriesByMoodLevels(List<Integer> moodLevels, RepositoryCallback<List<JournalEntryEntity>> callback) {
+        executorService.execute(() -> {
+            try {
+                List<JournalEntryEntity> entries = journalEntryDao.getEntriesByMoodLevels(moodLevels);
+                if (callback != null) {
+                    callback.onComplete(entries);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Get all entries synchronously
+     * @param callback Callback to receive all entries
+     */
+    public void getAllEntriesSync(RepositoryCallback<List<JournalEntryEntity>> callback) {
+        executorService.execute(() -> {
+            try {
+                List<JournalEntryEntity> entries = journalEntryDao.getAllEntriesSync();
+                if (callback != null) {
+                    callback.onComplete(entries);
+                }
+            } catch (Exception e) {
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+        });
+    }
 }

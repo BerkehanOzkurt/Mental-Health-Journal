@@ -35,6 +35,18 @@ public class RecentEntriesAdapter extends RecyclerView.Adapter<RecentEntriesAdap
         this.itemClickListener = listener;
     }
 
+    /**
+     * Update the entries list with new data and refresh the adapter
+     * @param newEntries The new list of entries to display
+     */
+    public void updateEntries(List<JournalEntry> newEntries) {
+        this.entries.clear();
+        if (newEntries != null) {
+            this.entries.addAll(newEntries);
+        }
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -49,6 +61,13 @@ public class RecentEntriesAdapter extends RecyclerView.Adapter<RecentEntriesAdap
         holder.date.setText(entry.getDate());
         holder.moodIcon.setImageResource(entry.getMoodIcon());
         holder.moodIcon.setBackgroundResource(entry.getMoodBackground());
+
+        // Item click listener for viewing entry details
+        holder.itemView.setOnClickListener(v -> {
+            if (itemClickListener != null) {
+                itemClickListener.onItemClick(entry);
+            }
+        });
 
         holder.btnMore.setOnClickListener(v -> {
             ContextThemeWrapper wrapper = new ContextThemeWrapper(v.getContext(), R.style.CustomPopupMenu);

@@ -39,31 +39,151 @@
                 android:textStyle="bold" />
 
         </com.google.android.material.appbar.MaterialToolbar>
+
+        <!-- Search Bar -->
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/search_background"
+            app:iconifiedByDefault="false"
+            app:queryHint="Search entries..."
+            app:searchHintIcon="@null"
+            app:searchIcon="@drawable/ic_search"
+            app:closeIcon="@drawable/ic_close"
+            app:queryBackground="@android:color/transparent" />
+
+        <!-- Filter Chips -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:paddingHorizontal="12dp"
+            android:paddingBottom="8dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/filter_chip_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_has_photo"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📷 Has Photo"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/chip_filter_state"
+                    app:checkedIconTint="@android:color/white" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_has_voice"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🎤 Has Voice"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/chip_filter_state"
+                    app:checkedIconTint="@android:color/white" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_mood_1"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="😢 Very Bad"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/chip_filter_state"
+                    app:checkedIconTint="@android:color/white" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_mood_2"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="😕 Bad"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/chip_filter_state"
+                    app:checkedIconTint="@android:color/white" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_mood_3"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="😐 Normal"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/chip_filter_state"
+                    app:checkedIconTint="@android:color/white" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_mood_4"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🙂 Good"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/chip_filter_state"
+                    app:checkedIconTint="@android:color/white" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_mood_5"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="😄 Very Good"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/chip_filter_state"
+                    app:checkedIconTint="@android:color/white" />
+
+            </com.google.android.material.chip.ChipGroup>
+        </HorizontalScrollView>
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <!-- Active Filters Summary -->
         <TextView
-            android:id="@+id/empty_text"
-            android:layout_width="wrap_content"
+            android:id="@+id/filter_summary_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="No entries yet.\nStart tracking your mood!"
-            android:textAlignment="center"
-            android:textColor="#888888"
-            android:textSize="16sp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
             android:visibility="gone" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/entries_recyclerview"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:padding="16dp" />
+            android:layout_height="match_parent">
 
-    </FrameLayout>
+            <TextView
+                android:id="@+id/empty_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="No entries yet.\nStart tracking your mood!"
+                android:textAlignment="center"
+                android:textColor="#888888"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/entries_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:padding="16dp" />
+
+        </FrameLayout>
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

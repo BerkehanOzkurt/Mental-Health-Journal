@@ -194,4 +194,48 @@ public interface JournalEntryDao {
      */
     @Query("SELECT * FROM journal_entries WHERE timestamp >= :startTime AND timestamp <= :endTime ORDER BY timestamp ASC")
     List<JournalEntryEntity> getEntriesInRangeSync(long startTime, long endTime);
+
+    // ========== Search and Filter Queries ==========
+
+    /**
+     * Search entries by keyword in note, emotions, and activities
+     * @param keyword The search keyword (will be wrapped with % for LIKE query)
+     * @return List of matching entries
+     */
+    @Query("SELECT * FROM journal_entries WHERE " +
+           "note LIKE '%' || :keyword || '%' OR " +
+           "emotions LIKE '%' || :keyword || '%' OR " +
+           "activities LIKE '%' || :keyword || '%' " +
+           "ORDER BY timestamp DESC")
+    List<JournalEntryEntity> searchEntriesByKeyword(String keyword);
+
+    /**
+     * Get entries with photos
+     * @return List of entries that have photos attached
+     */
+    @Query("SELECT * FROM journal_entries WHERE photoPath IS NOT NULL AND photoPath != '' ORDER BY timestamp DESC")
+    List<JournalEntryEntity> getEntriesWithPhotos();
+
+    /**
+     * Get entries with voice memos
+     * @return List of entries that have voice memos attached
+     */
+    @Query("SELECT * FROM journal_entries WHERE voiceMemoPath IS NOT NULL AND voiceMemoPath != '' ORDER BY timestamp DESC")
+    List<JournalEntryEntity> getEntriesWithVoiceMemos();
+
+    /**
+     * Get entries by mood level
+     * @param moodLevel The mood level (1-5)
+     * @return List of entries with that mood level
+     */
+    @Query("SELECT * FROM journal_entries WHERE moodLevel = :moodLevel ORDER BY timestamp DESC")
+    List<JournalEntryEntity> getEntriesByMoodLevel(int moodLevel);
+
+    /**
+     * Get entries by multiple mood levels
+     * @param moodLevels List of mood levels to filter by
+     * @return List of entries with any of the specified mood levels
+     */
+    @Query("SELECT * FROM journal_entries WHERE moodLevel IN (:moodLevels) ORDER BY timestamp DESC")
+    List<JournalEntryEntity> getEntriesByMoodLevels(List<Integer> moodLevels);
 }
