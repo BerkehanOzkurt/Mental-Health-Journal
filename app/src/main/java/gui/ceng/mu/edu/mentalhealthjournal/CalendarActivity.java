@@ -5,17 +5,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.LiveData;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.button.MaterialButton;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -29,12 +31,16 @@ public class CalendarActivity extends AppCompatActivity {
 
     private GridLayout calendarGrid;
     private TextView tvMonthYear;
-    private MaterialButton btnPrevMonth, btnNextMonth;
+    private ImageButton btnPrevMonth, btnNextMonth;
+    private CardView selectedDayCard;
+    private ImageView selectedDayEmoji;
+    private TextView selectedDayDate, selectedDayMood, btnViewEntry;
     
     private Calendar currentCalendar;
     private Calendar todayCalendar;
     private JournalRepository repository;
-    private Map<String, Integer> moodByDate = new HashMap<>();
+    private Map<String, List<JournalEntryEntity>> entriesByDate = new HashMap<>();
+    private int selectedDay = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +59,19 @@ public class CalendarActivity extends AppCompatActivity {
         tvMonthYear = findViewById(R.id.tv_month_year);
         btnPrevMonth = findViewById(R.id.btn_prev_month);
         btnNextMonth = findViewById(R.id.btn_next_month);
+        
+        // Selected day card views
+        selectedDayCard = findViewById(R.id.selected_day_card);
+        selectedDayEmoji = findViewById(R.id.selected_day_emoji);
+        selectedDayDate = findViewById(R.id.selected_day_date);
+        selectedDayMood = findViewById(R.id.selected_day_mood);
+        btnViewEntry = findViewById(R.id.btn_view_entry);
 
         // Set up navigation buttons
         btnPrevMonth.setOnClickListener(v -> {
             currentCalendar.add(Calendar.MONTH, -1);
+            selectedDay = -1;
+            selectedDayCard.setVisibility(View.GONE);
             loadCalendar();
         });
 
@@ -72,6 +87,9 @@ public class CalendarActivity extends AppCompatActivity {
                 Toast.makeText(this, "Cannot go to future months", Toast.LENGTH_SHORT).show();
                 return;
             }
+            
+            selectedDay = -1;
+            selectedDayCard.setVisibility(View.GONE);
             
             currentCalendar.add(Calendar.MONTH, 1);
             loadCalendar();
@@ -161,12 +179,15 @@ public class CalendarActivity extends AppCompatActivity {
             repository.getEntriesByDateRange(firstDay.getTimeInMillis(), lastDay.getTimeInMillis());
         
         entriesLiveData.observe(this, entries -> {
-            moodByDate.clear();
+            entriesByDate.clear();
             if (entries != null) {
                 SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 for (JournalEntryEntity entry : entries) {
                     String dateKey = dayFormat.format(entry.getTimestamp());
-                    moodByDate.put(dateKey, entry.getMoodLevel());
+                    if (!entriesByDate.containsKey(dateKey)) {
+                        entriesByDate.put(dateKey, new ArrayList<>());
+                    }
+                    entriesByDate.get(dateKey).add(entry);
                 }
             }
             buildCalendarGrid();
@@ -197,8 +218,9 @@ public class CalendarActivity extends AppCompatActivity {
             View dayView = LayoutInflater.from(this).inflate(R.layout.item_calendar_day, calendarGrid, false);
             
             TextView tvDayNumber = dayView.findViewById(R.id.tv_day_number);
-            MaterialButton btnAddEntry = dayView.findViewById(R.id.btn_add_entry);
+            ImageView btnAddEntry = dayView.findViewById(R.id.btn_add_entry);
             ImageView imgEmoji = dayView.findViewById(R.id.img_emoji);
+            View todayIndicator = dayView.findViewById(R.id.today_indicator);
             
             if (i < offset || dayCounter > daysInMonth) {
                 // Empty cell
@@ -207,34 +229,45 @@ public class CalendarActivity extends AppCompatActivity {
                 final int day = dayCounter;
                 tvDayNumber.setText(String.valueOf(day));
                 
-                // Check if this day is in the future
+                // Check if this day is today
                 cal.set(Calendar.DAY_OF_MONTH, day);
+                boolean isToday = isToday(cal);
+                if (isToday) {
+                    tvDayNumber.setTextColor(getResources().getColor(R.color.very_good, null));
+                    todayIndicator.setVisibility(View.VISIBLE);
+                }
+                
+                // Check if this day is in the future
                 boolean isFutureDay = isFutureDate(cal);
                 
-                // Check if there's an entry for this day
+                // Check if there are entries for this day
                 String dateKey = dayFormat.format(cal.getTime());
                 
-                if (moodByDate.containsKey(dateKey)) {
-                    // Show emoji for this mood
-                    int mood = moodByDate.get(dateKey);
+                if (entriesByDate.containsKey(dateKey) && !entriesByDate.get(dateKey).isEmpty()) {
+                    List<JournalEntryEntity> dayEntries = entriesByDate.get(dateKey);
+                    // Show emoji for the most recent mood (first in list as they're sorted by timestamp desc)
+                    int mood = dayEntries.get(0).getMoodLevel();
+                    int entryCount = dayEntries.size();
+                    
                     btnAddEntry.setVisibility(View.GONE);
                     imgEmoji.setVisibility(View.VISIBLE);
                     imgEmoji.setImageResource(getMoodDrawable(mood));
                     
-                    // Click to edit entry
-                    imgEmoji.setOnClickListener(v -> openAddEntry(day));
+                    // Click to show entry info
+                    imgEmoji.setOnClickListener(v -> {
+                        showSelectedDayInfo(day, dateKey, dayEntries);
+                    });
                 } else if (isFutureDay) {
                     // Future day - show disabled state
                     btnAddEntry.setVisibility(View.VISIBLE);
-                    btnAddEntry.setAlpha(0.3f);
+                    btnAddEntry.setAlpha(0.15f);
                     imgEmoji.setVisibility(View.GONE);
-                    btnAddEntry.setOnClickListener(v -> {
-                        Toast.makeText(this, "This day is yet to come", Toast.LENGTH_SHORT).show();
-                    });
+                    btnAddEntry.setOnClickListener(null);
+                    tvDayNumber.setAlpha(0.4f);
                 } else {
                     // Past or today - show add button
                     btnAddEntry.setVisibility(View.VISIBLE);
-                    btnAddEntry.setAlpha(1.0f);
+                    btnAddEntry.setAlpha(0.5f);
                     imgEmoji.setVisibility(View.GONE);
                     btnAddEntry.setOnClickListener(v -> openAddEntry(day));
                 }
@@ -250,6 +283,81 @@ public class CalendarActivity extends AppCompatActivity {
             dayView.setLayoutParams(params);
             
             calendarGrid.addView(dayView);
+        }
+    }
+    
+    private boolean isToday(Calendar date) {
+        return date.get(Calendar.YEAR) == todayCalendar.get(Calendar.YEAR) &&
+               date.get(Calendar.MONTH) == todayCalendar.get(Calendar.MONTH) &&
+               date.get(Calendar.DAY_OF_MONTH) == todayCalendar.get(Calendar.DAY_OF_MONTH);
+    }
+    
+    private void showSelectedDayInfo(int day, String dateKey, List<JournalEntryEntity> entries) {
+        selectedDay = day;
+        selectedDayCard.setVisibility(View.VISIBLE);
+        
+        // Set date text
+        Calendar cal = (Calendar) currentCalendar.clone();
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
+        selectedDayDate.setText(dateFormat.format(cal.getTime()));
+        
+        // Get the most recent entry's mood
+        int mood = entries.get(0).getMoodLevel();
+        int entryCount = entries.size();
+        
+        // Set mood emoji and text
+        selectedDayEmoji.setImageResource(getMoodDrawable(mood));
+        if (entryCount > 1) {
+            selectedDayMood.setText(entryCount + " entries");
+        } else {
+            selectedDayMood.setText(getMoodText(mood));
+        }
+        
+        // Set view button click to open entries for this day
+        btnViewEntry.setOnClickListener(v -> {
+            openDayEntries(day, dateKey);
+        });
+    }
+    
+    private void openDayEntries(int day, String dateKey) {
+        // Open AllEntriesActivity with date filter
+        Intent intent = new Intent(this, AllEntriesActivity.class);
+        intent.putExtra(AllEntriesActivity.EXTRA_FILTER_DATE, dateKey);
+        
+        Calendar cal = (Calendar) currentCalendar.clone();
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        intent.putExtra(AllEntriesActivity.EXTRA_FILTER_DATE_MILLIS_START, getStartOfDay(cal));
+        intent.putExtra(AllEntriesActivity.EXTRA_FILTER_DATE_MILLIS_END, getEndOfDay(cal));
+        startActivity(intent);
+    }
+    
+    private long getStartOfDay(Calendar cal) {
+        Calendar start = (Calendar) cal.clone();
+        start.set(Calendar.HOUR_OF_DAY, 0);
+        start.set(Calendar.MINUTE, 0);
+        start.set(Calendar.SECOND, 0);
+        start.set(Calendar.MILLISECOND, 0);
+        return start.getTimeInMillis();
+    }
+    
+    private long getEndOfDay(Calendar cal) {
+        Calendar end = (Calendar) cal.clone();
+        end.set(Calendar.HOUR_OF_DAY, 23);
+        end.set(Calendar.MINUTE, 59);
+        end.set(Calendar.SECOND, 59);
+        end.set(Calendar.MILLISECOND, 999);
+        return end.getTimeInMillis();
+    }
+    
+    private String getMoodText(int mood) {
+        switch (mood) {
+            case 5: return "Feeling Great";
+            case 4: return "Feeling Good";
+            case 3: return "Feeling Okay";
+            case 2: return "Feeling Bad";
+            case 1: return "Feeling Awful";
+            default: return "Unknown";
         }
     }
     

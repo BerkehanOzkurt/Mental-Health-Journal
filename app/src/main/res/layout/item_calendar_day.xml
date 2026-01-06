@@ -9,79 +9,54 @@
     android:gravity="center_horizontal"
     android:padding="2dp">
 
-    <!-- Day Button Container -->
-    <FrameLayout
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_marginBottom="2dp">
-
-        <!-- Background Circle -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_day"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:text="1"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:padding="0dp"
-            android:visibility="gone"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:cornerRadius="22dp"
-            app:strokeColor="#555555"
-            app:strokeWidth="2dp" />
-
-        <!-- Add Icon (+ button) -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_entry"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_gravity="center"
-            android:text="+"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:padding="0dp"
-            android:insetLeft="0dp"
-            android:insetRight="0dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:cornerRadius="22dp"
-            app:strokeColor="#555555"
-            app:strokeWidth="2dp"
-            android:visibility="visible" />
-
-        <!-- Emoji Icon as ImageView -->
-        <ImageView
-            android:id="@+id/img_emoji"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_gravity="center"
-            android:padding="6dp"
-            android:visibility="gone" />
-
-        <!-- Emoji Icon as Text -->
-        <TextView
-            android:id="@+id/tv_emoji"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="22sp"
-            android:visibility="gone" />
-
-    </FrameLayout>
-
-    <!-- Day Number (shown below circle) -->
+    <!-- Day Number -->
     <TextView
         android:id="@+id/tv_day_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1"
-        android:textColor="@android:color/white"
-        android:textSize="10sp"
-        android:textStyle="bold" />
+        android:textColor="#9E9E9E"
+        android:textSize="11sp"
+        android:layout_marginBottom="2dp" />
+
+    <!-- Day Button Container -->
+    <FrameLayout
+        android:layout_width="36dp"
+        android:layout_height="36dp">
+
+        <!-- Add Icon (+ button) for empty days -->
+        <ImageView
+            android:id="@+id/btn_add_entry"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_add_circle"
+            app:tint="#3D3D3D"
+            android:scaleType="fitCenter"
+            android:visibility="visible"
+            android:contentDescription="Add entry" />
+
+        <!-- Emoji Icon for days with entries -->
+        <ImageView
+            android:id="@+id/img_emoji"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:padding="2dp"
+            android:visibility="gone"
+            android:contentDescription="Mood" />
+
+        <!-- Today indicator -->
+        <View
+            android:id="@+id/today_indicator"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/circle_background"
+            android:backgroundTint="#4CAF50"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
 </LinearLayout>

@@ -28,8 +28,13 @@ import gui.ceng.mu.edu.mentalhealthjournal.data.repository.JournalRepository;
 /**
  * Activity displaying all journal entries in a scrollable list.
  * Newest entries appear at the top.
+ * Can be filtered by date when opened from calendar.
  */
 public class AllEntriesActivity extends AppCompatActivity {
+
+    public static final String EXTRA_FILTER_DATE = "filter_date";
+    public static final String EXTRA_FILTER_DATE_MILLIS_START = "filter_date_millis_start";
+    public static final String EXTRA_FILTER_DATE_MILLIS_END = "filter_date_millis_end";
 
     private RecyclerView recyclerView;
     private RecentEntriesAdapter adapter;
@@ -37,6 +42,11 @@ public class AllEntriesActivity extends AppCompatActivity {
     private JournalRepository repository;
     private Handler mainHandler;
     private TextView emptyText;
+    private TextView titleText;
+    
+    private String filterDate;
+    private long filterStartMillis = -1;
+    private long filterEndMillis = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +55,11 @@ public class AllEntriesActivity extends AppCompatActivity {
 
         repository = new JournalRepository(this);
         mainHandler = new Handler(Looper.getMainLooper());
+        
+        // Check for date filter from intent
+        filterDate = getIntent().getStringExtra(EXTRA_FILTER_DATE);
+        filterStartMillis = getIntent().getLongExtra(EXTRA_FILTER_DATE_MILLIS_START, -1);
+        filterEndMillis = getIntent().getLongExtra(EXTRA_FILTER_DATE_MILLIS_END, -1);
 
         initViews();
         loadAllEntries();
@@ -55,8 +70,23 @@ public class AllEntriesActivity extends AppCompatActivity {
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
 
         emptyText = findViewById(R.id.empty_text);
+        titleText = findViewById(R.id.title_text);
         recyclerView = findViewById(R.id.entries_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        
+        // Update title if filtering by date
+        if (filterDate != null && titleText != null) {
+            try {
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
+                Date date = inputFormat.parse(filterDate);
+                if (date != null) {
+                    titleText.setText("Entries for " + outputFormat.format(date));
+                }
+            } catch (Exception e) {
+                titleText.setText("Entries for " + filterDate);
+            }
+        }
 
         journalEntries = new ArrayList<>();
         adapter = new RecentEntriesAdapter(journalEntries, new RecentEntriesAdapter.OnEntryActionListener() {
@@ -94,23 +124,30 @@ public class AllEntriesActivity extends AppCompatActivity {
     }
 
     private void loadAllEntries() {
-        repository.getAllEntries().observe(this, entities -> {
-            journalEntries.clear();
+        // Check if we need to filter by date
+        if (filterStartMillis > 0 && filterEndMillis > 0) {
+            repository.getEntriesByDateRange(filterStartMillis, filterEndMillis).observe(this, this::updateEntriesList);
+        } else {
+            repository.getAllEntries().observe(this, this::updateEntriesList);
+        }
+    }
+    
+    private void updateEntriesList(List<JournalEntryEntity> entities) {
+        journalEntries.clear();
 
-            if (entities != null && !entities.isEmpty()) {
-                emptyText.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-                for (JournalEntryEntity entity : entities) {
-                    JournalEntry entry = convertEntityToJournalEntry(entity);
-                    journalEntries.add(entry);
-                }
-            } else {
-                emptyText.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.GONE);
+        if (entities != null && !entities.isEmpty()) {
+            emptyText.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            for (JournalEntryEntity entity : entities) {
+                JournalEntry entry = convertEntityToJournalEntry(entity);
+                journalEntries.add(entry);
             }
+        } else {
+            emptyText.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
 
-            adapter.notifyDataSetChanged();
-        });
+        adapter.notifyDataSetChanged();
     }
 
     private JournalEntry convertEntityToJournalEntry(JournalEntryEntity entity) {
